@@ -10,7 +10,7 @@
         <el-table-column prop="id" label="ID" width="60" />
         <el-table-column label="图片" width="140">
           <template #default="{ row }">
-            <img :src="row.imageUrl" class="img-cell" @click="window.open(row.imageUrl)" />
+            <img :src="imgUrl(row.imageUrl)" class="img-cell" @click="window.open(imgUrl(row.imageUrl))" />
           </template>
         </el-table-column>
         <el-table-column prop="title" label="标题" min-width="140" />
@@ -71,6 +71,7 @@ import { ref, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { bannerApi } from '../api';
 import ImageUpload from '../components/ImageUpload.vue';
+import { imgUrl } from '../utils/img';
 
 const list = ref([]);
 const loading = ref(false);

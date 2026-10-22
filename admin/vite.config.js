@@ -3,8 +3,8 @@ import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
   plugins: [vue()],
-  // 生产环境部署在 https://域名/admin/ 子路径下
-  base: '/admin/',
+  // 生产环境部署在 https://域名/peixue/admin/ 子路径下
+  base: '/peixue/admin/',
   server: {
     port: 5173,
     proxy: {

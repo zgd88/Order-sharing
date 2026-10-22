@@ -1,6 +1,6 @@
 <template>
   <div class="img-upload">
-    <img v-if="modelValue" :src="modelValue" class="preview" alt="图片" />
+    <img v-if="modelValue" :src="imgUrl(modelValue)" class="preview" alt="图片" />
     <el-upload
       :show-file-list="false"
       :http-request="doUpload"
@@ -14,6 +14,7 @@
 <script setup>
 import { ElMessage } from 'element-plus';
 import { uploadApi } from '../api';
+import { imgUrl } from '../utils/img';
 
 defineProps({ modelValue: { type: String, default: '' } });
 const emit = defineEmits(['update:modelValue']);

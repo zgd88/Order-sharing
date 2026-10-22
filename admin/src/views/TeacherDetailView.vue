@@ -36,7 +36,7 @@
         <div class="img-title">证件照片</div>
         <div class="img-list">
           <div class="img-item" v-if="t.certImageUrl">
-            <el-image :src="t.certImageUrl" :preview-src-list="[t.certImageUrl]" fit="contain" class="cert-img" />
+            <el-image :src="imgUrl(t.certImageUrl)" :preview-src-list="[imgUrl(t.certImageUrl)]" fit="contain" class="cert-img" />
             <div class="img-label">证件照片</div>
           </div>
           <div class="img-item" v-else>
@@ -44,7 +44,7 @@
             <div class="img-label">证件照片</div>
           </div>
           <div class="img-item" v-if="t.degreeImageUrl">
-            <el-image :src="t.degreeImageUrl" :preview-src-list="[t.degreeImageUrl]" fit="contain" class="cert-img" />
+            <el-image :src="imgUrl(t.degreeImageUrl)" :preview-src-list="[imgUrl(t.degreeImageUrl)]" fit="contain" class="cert-img" />
             <div class="img-label">学历证书</div>
           </div>
         </div>
@@ -59,6 +59,7 @@ import { useRoute } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { teacherApi } from '../api';
 import StatusTag from '../components/StatusTag.vue';
+import { imgUrl } from '../utils/img';
 
 const route = useRoute();
 const t = ref(null);

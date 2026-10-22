@@ -29,7 +29,7 @@
         </el-table-column>
         <el-table-column label="证件照片" width="110">
           <template #default="{ row }">
-            <img v-if="row.certImageUrl" :src="row.certImageUrl" class="img-cell" @click="preview(row.certImageUrl)" />
+            <img v-if="row.certImageUrl" :src="imgUrl(row.certImageUrl)" class="img-cell" @click="preview(row.certImageUrl)" />
           </template>
         </el-table-column>
         <el-table-column label="状态" width="90">
@@ -57,6 +57,7 @@ import { ref, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { teacherApi } from '../api';
 import StatusTag from '../components/StatusTag.vue';
+import { imgUrl } from '../utils/img';
 
 const status = ref('pending');
 const list = ref([]);
@@ -79,7 +80,7 @@ async function load() {
 }
 
 function preview(url) {
-  window.open(url, '_blank');
+  window.open(imgUrl(url), '_blank');
 }
 
 async function audit(row, action) {
