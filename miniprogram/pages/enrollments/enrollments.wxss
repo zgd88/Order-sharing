@@ -1,0 +1,164 @@
+.empty-sub {
+  font-size: 24rpx;
+  margin-top: 12rpx;
+}
+
+.segment-bar {
+  display: flex;
+  background: #e9ecf0;
+  border-radius: 44rpx;
+  padding: 6rpx;
+  margin-bottom: 24rpx;
+}
+
+.segment-item {
+  flex: 1;
+  text-align: center;
+  line-height: 72rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.segment-item.active {
+  background: #fff;
+  color: #4A90E2;
+  font-weight: 700;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.demand-publish-btn {
+  background: linear-gradient(135deg, #FA8C16, #F5222D);
+  color: #fff;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 80rpx;
+  margin-bottom: 24rpx;
+}
+
+.enroll-card { }
+
+.e-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14rpx;
+  gap: 16rpx;
+}
+
+.e-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  flex: 1;
+}
+
+.e-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+  flex-wrap: wrap;
+}
+
+.e-teacher {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.e-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.e-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.e-price-label {
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 4rpx;
+}
+
+.e-price {
+  font-size: 40rpx;
+}
+
+.e-price .unit {
+  font-size: 22rpx;
+}
+
+.e-progress {
+  flex: 1;
+  margin-left: 40rpx;
+}
+
+.e-progress-text {
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+  text-align: right;
+}
+
+.progress-bar {
+  height: 16rpx;
+  background: #f0f0f0;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.progress-inner {
+  height: 100%;
+  background: linear-gradient(90deg, #4A90E2, #52C41A);
+  border-radius: 8rpx;
+}
+
+.e-refunds {
+  margin-top: 20rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx dashed #eee;
+}
+
+.e-refund-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 24rpx;
+  color: #666;
+  padding: 6rpx 0;
+}
+
+.refund-paid {
+  color: #52C41A;
+}
+
+.t-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.t-title {
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.t-publish {
+  background: #4A90E2;
+  color: #fff;
+  font-size: 26rpx;
+  border-radius: 40rpx;
+  padding: 0 28rpx;
+  line-height: 64rpx;
+  margin: 0;
+}
+
+.e-link {
+  text-align: right;
+  color: #4A90E2;
+  font-size: 24rpx;
+  margin-top: 16rpx;
+}

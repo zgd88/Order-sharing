@@ -1,0 +1,16 @@
+<view class="container">
+  <view wx:if="{{unreadCount > 0}}" class="unread-bar" bindtap="readAll">
+    有 {{unreadCount}} 条未读消息 · 点击全部标记已读
+  </view>
+  <view wx:if="{{!loading && !list.length}}" class="empty">暂无消息</view>
+
+  <view class="card notice-card {{!item.isRead ? 'unread' : ''}}" wx:for="{{list}}" wx:key="id">
+    <view class="n-icon">{{item.typeIcon}}</view>
+    <view class="n-body">
+      <view class="n-title">{{item.title}}</view>
+      <view class="n-content">{{item.content}}</view>
+      <view class="n-time">{{item.timeText}}</view>
+    </view>
+    <view wx:if="{{!item.isRead}}" class="n-dot"></view>
+  </view>
+</view>

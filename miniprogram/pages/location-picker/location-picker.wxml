@@ -1,0 +1,51 @@
+<view class="picker-page">
+  <!-- 顶部搜索栏 -->
+  <view class="search-bar">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索地点，如：观山湖公园"
+        value="{{keyword}}"
+        bindinput="onKeyword"
+        bindconfirm="search"
+        confirm-type="search"
+      />
+      <text wx:if="{{keyword}}" class="search-clear" catchtap="onClear">✕</text>
+    </view>
+    <view class="search-btn" bindtap="search">{{searching ? '搜索中' : '搜索'}}</view>
+  </view>
+
+  <!-- 未配置 Key 提示 -->
+  <view wx:if="{{noKey}}" class="nokey-tip">
+    ⚠️ 高德地图 Key 未配置，暂时无法搜索；可点击底部"在地图上选点"选择位置
+  </view>
+
+  <!-- 搜索结果 -->
+  <scroll-view scroll-y class="result-list">
+    <view wx:if="{{searched && !results.length && !noKey}}" class="empty">未找到相关地点，换个关键词试试</view>
+    <view
+      class="poi-item"
+      wx:for="{{results}}"
+      wx:key="id"
+      data-poi="{{item}}"
+      bindtap="onSelectPoi"
+    >
+      <view class="poi-icon">📍</view>
+      <view class="poi-info">
+        <view class="poi-name">{{item.name}}</view>
+        <view class="poi-address">{{item.fullAddress}}</view>
+      </view>
+      <view class="poi-arrow">›</view>
+    </view>
+    <view wx:if="{{!searched}}" class="empty hint">
+      <view>输入关键词搜索高德地图地点</view>
+      <view class="hint-sub">或点击底部按钮在地图上点选</view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部：地图点选 -->
+  <view class="bottom-bar">
+    <button class="map-btn" bindtap="chooseOnMap">🗺️ 在地图上选点</button>
+  </view>
+</view>

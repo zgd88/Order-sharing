@@ -1,0 +1,26 @@
+<view class="container" wx:if="{{!loading}}">
+  <view class="card hero">
+    <view class="hero-label">预计收益（扣除{{stats.ratePercent}}%平台服务费）</view>
+    <view class="hero-num">¥{{stats.totalNetText}}</view>
+    <view class="hero-sub">报名总额 ¥{{stats.totalGrossText}}</view>
+  </view>
+
+  <view class="card">
+    <view class="form-title">课程收益明细</view>
+    <view wx:if="{{!courses.length}}" class="empty small">发布课程后，收益会显示在这里</view>
+    <view class="earn-row" wx:for="{{courses}}" wx:key="id">
+      <view class="earn-info">
+        <view class="earn-title">{{item.title}}</view>
+        <view class="earn-meta">{{item.enrolled_count}}人参团 · ¥{{item.priceText}}/节 · <text class="tag {{item.statusInfo.color === 'gray' ? 'tag-gray' : 'tag-blue'}}">{{item.statusInfo.text}}</text></view>
+      </view>
+      <view class="earn-amount">
+        <view class="earn-net price">¥{{item.netText}}</view>
+        <view class="earn-gross">总额 ¥{{item.grossText}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="withdraw-note">
+    💰 提现功能将在接入微信支付分账后开放（二期），当前收益为模拟统计
+  </view>
+</view>

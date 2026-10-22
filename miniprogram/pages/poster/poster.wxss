@@ -1,0 +1,44 @@
+.poster-page {
+  min-height: 100vh;
+  background: #2c2c34;
+  padding: 40rpx;
+  box-sizing: border-box;
+}
+
+.poster-preview {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.poster-img {
+  width: 100%;
+  display: block;
+}
+
+.poster-loading {
+  text-align: center;
+  padding: 200rpx 0;
+  color: #999;
+}
+
+.poster-actions {
+  margin-top: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.share-btn {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.hidden-canvas {
+  position: fixed;
+  left: -9999rpx;
+  top: -9999rpx;
+  width: 600px;
+  height: 960px;
+}

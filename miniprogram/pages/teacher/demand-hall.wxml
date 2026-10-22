@@ -1,0 +1,25 @@
+<view class="container">
+  <view class="filter-bar">
+    <picker class="filter-picker" range="{{subjects}}" value="{{subjectIndex}}" bindchange="onSubject">
+      <view class="filter-item">{{subjects[subjectIndex]}} ▾</view>
+    </picker>
+    <view class="filter-note">🔒 家长电话与门牌号已脱敏</view>
+  </view>
+
+  <view wx:if="{{!loading && !list.length}}" class="empty">
+    <view>暂无招募中的需求</view>
+    <view class="empty-sub">过会儿再来看看</view>
+  </view>
+
+  <view class="card demand-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="onDemandTap">
+    <view class="d-head">
+      <view class="d-title">{{item.subject}}{{item.grade ? ' · ' + item.grade : ''}}家教</view>
+      <view class="d-rate price">¥{{item.rateText}}<text class="unit">/小时</text></view>
+    </view>
+    <view class="d-meta">📍 {{item.addressDisplay}}</view>
+    <view class="d-foot">
+      <text class="d-time">{{item.timeText}}</text>
+      <text class="d-count">{{item.applicationCount}} 位老师已投递</text>
+    </view>
+  </view>
+</view>

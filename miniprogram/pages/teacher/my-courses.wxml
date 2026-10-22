@@ -1,0 +1,25 @@
+<view class="container">
+  <view wx:if="{{!loading && !list.length}}" class="empty">
+    <view>还没有发布课程</view>
+    <view class="empty-sub">发布一门拼好课，让家长帮你拉人</view>
+  </view>
+  <view class="card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="onCourseTap">
+    <view class="e-head">
+      <view class="e-title">{{item.title}}</view>
+      <view class="tag {{item.statusInfo.color === 'gray' ? 'tag-gray' : item.statusInfo.color === '#52C41A' ? 'tag-green' : item.statusInfo.color === '#FA8C16' ? 'tag-orange' : 'tag-blue'}}">{{item.statusInfo.text}}</view>
+    </view>
+    <view class="e-meta">
+      <text class="tag tag-blue">{{item.subject}}</text>
+      <text class="e-time">{{item.startText}}开课 · {{item.city}}</text>
+    </view>
+    <view class="e-row">
+      <view class="e-progress">
+        <view class="e-progress-text">报名 {{item.enrolled_count}}/{{item.max_students}}人</view>
+        <view class="progress-bar"><view class="progress-inner" style="width: {{item.enrolled_count / item.max_students * 100}}%"></view></view>
+      </view>
+      <view class="e-price price">¥{{item.priceText}}<text class="unit">/节</text></view>
+    </view>
+    <view class="e-link">查看报名名单 ›</view>
+  </view>
+  <button class="btn-primary publish-fab" bindtap="goPublish">＋ 发布拼好课</button>
+</view>

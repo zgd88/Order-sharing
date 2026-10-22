@@ -1,0 +1,40 @@
+<view class="container">
+  <view class="card">
+    <view class="form-title">发布找老师需求</view>
+    <view class="form-item-row">
+      <view class="form-item half">
+        <view class="form-label">科目</view>
+        <picker range="{{subjects}}" value="{{subjectIndex}}" bindchange="onSubject">
+          <view class="form-picker">{{subjects[subjectIndex]}} ▾</view>
+        </picker>
+      </view>
+      <view class="form-item half">
+        <view class="form-label">年级</view>
+        <picker range="{{grades}}" value="{{gradeIndex}}" bindchange="onGrade">
+          <view class="form-picker">{{grades[gradeIndex]}} ▾</view>
+        </picker>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">课时费（元/小时）</view>
+      <input class="form-input" type="digit" placeholder="如：150" value="{{form.hourlyRate}}" data-key="hourlyRate" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <view class="form-label">联系电话</view>
+      <input class="form-input" type="number" maxlength="11" placeholder="仅平台客服可见，不会公开给老师" value="{{form.phone}}" data-key="phone" bindinput="onField" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="form-title">上课地点</view>
+    <view class="form-item">
+      <view class="location-row" bindtap="chooseLocation">
+        <view class="location-text {{form.address ? '' : 'placeholder'}}">{{form.address || '点击选择地图位置'}}</view>
+        <view class="arrow"></view>
+      </view>
+    </view>
+    <view class="privacy-tip">🔒 您的电话与详细门牌号仅平台客服可见，老师端只显示"xx区xx街道"级别的位置</view>
+  </view>
+
+  <button class="btn-primary submit-btn" bindtap="submit" disabled="{{submitting}}">发布需求</button>
+</view>

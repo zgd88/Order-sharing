@@ -1,0 +1,30 @@
+<view class="login-page">
+  <view class="logo-area">
+    <view class="logo">培学</view>
+    <view class="slogan">同城教培拼好课</view>
+    <view class="sub-slogan">好老师拼着学，越拼越便宜</view>
+  </view>
+
+  <view class="role-area">
+    <view class="role-title">请选择您的身份</view>
+    <view class="role-card {{role === 'parent' ? 'active' : ''}}" data-role="parent" bindtap="selectRole">
+      <view class="role-icon">👨‍👩‍👧</view>
+      <view class="role-info">
+        <view class="role-name">我是家长</view>
+        <view class="role-desc">找好老师 · 拼团报名 · 越拼越省</view>
+      </view>
+      <view class="check {{role === 'parent' ? 'checked' : ''}}"></view>
+    </view>
+    <view class="role-card {{role === 'teacher' ? 'active' : ''}}" data-role="teacher" bindtap="selectRole">
+      <view class="role-icon">🧑‍🏫</view>
+      <view class="role-info">
+        <view class="role-name">我是老师</view>
+        <view class="role-desc">发布拼好课 · 招生更快 · 排课更满</view>
+      </view>
+      <view class="check {{role === 'teacher' ? 'checked' : ''}}"></view>
+    </view>
+  </view>
+
+  <button class="btn-primary login-btn" bindtap="doLogin">进入小程序</button>
+  <view class="tip">开发演示版：无需注册，选择身份即可体验</view>
+</view>

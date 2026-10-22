@@ -1,0 +1,81 @@
+.empty-sub {
+  font-size: 24rpx;
+  margin-top: 12rpx;
+}
+
+.e-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14rpx;
+  gap: 16rpx;
+}
+
+.e-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  flex: 1;
+}
+
+.e-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+  flex-wrap: wrap;
+}
+
+.e-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.e-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.e-progress {
+  flex: 1;
+  margin-right: 40rpx;
+}
+
+.e-progress-text {
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.progress-bar {
+  height: 16rpx;
+  background: #f0f0f0;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.progress-inner {
+  height: 100%;
+  background: linear-gradient(90deg, #4A90E2, #52C41A);
+  border-radius: 8rpx;
+}
+
+.e-price {
+  font-size: 40rpx;
+}
+
+.e-price .unit {
+  font-size: 22rpx;
+}
+
+.e-link {
+  text-align: right;
+  color: #4A90E2;
+  font-size: 24rpx;
+  margin-top: 16rpx;
+}
+
+.publish-fab {
+  margin: 24rpx 0 48rpx;
+  width: 100%;
+}

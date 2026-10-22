@@ -1,0 +1,94 @@
+<view class="container">
+  <view class="card">
+    <view class="form-title">基本信息</view>
+    <view class="form-item">
+      <view class="form-label">课程标题</view>
+      <input class="form-input" placeholder="如：三年级数学思维班（10次课）" value="{{form.title}}" data-key="title" bindinput="onField" />
+    </view>
+    <view class="form-item-row">
+      <view class="form-item half">
+        <view class="form-label">科目</view>
+        <picker range="{{subjects}}" value="{{subjectIndex}}" bindchange="onSubject">
+          <view class="form-picker">{{subjects[subjectIndex]}} ▾</view>
+        </picker>
+      </view>
+      <view class="form-item half">
+        <view class="form-label">年级（选填）</view>
+        <picker range="{{grades}}" value="{{gradeIndex}}" bindchange="onGrade">
+          <view class="form-picker">{{grades[gradeIndex]}} ▾</view>
+        </picker>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">课程封面（选填）</view>
+      <view class="cover-box" bindtap="chooseCover">
+        <image wx:if="{{form.coverUrl}}" class="cover-img" src="{{form.coverUrl}}" mode="aspectFill" />
+        <view wx:else class="cover-placeholder">＋ 上传封面图</view>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">课程大纲</view>
+      <textarea class="form-textarea" placeholder="课程内容、教学目标、适合人群等" value="{{form.outline}}" data-key="outline" bindinput="onField" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="form-title">时间地点</view>
+    <view class="form-item">
+      <view class="form-label">开课时间</view>
+      <picker mode="date" value="{{startDate}}" bindchange="onTime" data-key="startTime">
+        <view class="form-picker">{{startTime || '请选择'}} ▾</view>
+      </picker>
+    </view>
+    <view class="form-item">
+      <view class="form-label">结束时间</view>
+      <picker mode="date" value="{{endDate}}" bindchange="onTime" data-key="endTime">
+        <view class="form-picker">{{endTime || '请选择'}} ▾</view>
+      </picker>
+    </view>
+    <view class="form-item">
+      <view class="form-label">报名截止</view>
+      <picker mode="date" value="{{deadlineDate}}" bindchange="onTime" data-key="deadlineAt">
+        <view class="form-picker">{{deadlineAt || '请选择'}} ▾</view>
+      </picker>
+    </view>
+    <view class="form-item">
+      <view class="form-label">上课地点</view>
+      <view class="location-row" bindtap="chooseLocation">
+        <view class="location-text {{form.address ? '' : 'placeholder'}}">{{form.address || '点击选择地图位置'}}</view>
+        <view class="arrow"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card tier-card">
+    <view class="form-title">阶梯拼团价 <text class="tier-hint">人数越多越便宜</text></view>
+    <view class="tier-row-head">
+      <text>满 N 人</text>
+      <text>单价（元/节）</text>
+      <text></text>
+    </view>
+    <view class="tier-row" wx:for="{{tiers}}" wx:key="index">
+      <input class="tier-input" type="number" placeholder="人数" value="{{item.min_people}}" data-idx="{{index}}" bindinput="onTierCount" disabled="{{index === 0}}" />
+      <view class="tier-arrow">→</view>
+      <input class="tier-input price" type="digit" placeholder="价格" value="{{item.price_cents}}" data-idx="{{index}}" bindinput="onTierPrice" />
+      <view class="tier-del" wx:if="{{index > 0}}" data-idx="{{index}}" bindtap="removeTier">✕</view>
+      <view class="tier-del placeholder" wx:else></view>
+    </view>
+    <view class="tier-add" bindtap="addTier">＋ 添加档位（最多5档）</view>
+
+    <view class="form-item-row config-row">
+      <view class="form-item half">
+        <view class="form-label">成团人数</view>
+        <input class="form-input" type="number" value="{{minStudents}}" bindinput="onMinStudents" />
+      </view>
+      <view class="form-item half">
+        <view class="form-label">人数上限</view>
+        <input class="form-input" type="number" value="{{maxStudents}}" bindinput="onMaxStudents" />
+      </view>
+    </view>
+    <view class="tier-tip">💡 家长按当前档价参团，人数每上一档，差价自动退还给先前报名的家长。截止未达成团人数自动流局退款。</view>
+  </view>
+
+  <button class="btn-primary submit-btn" bindtap="submit" disabled="{{submitting}}">发布拼好课</button>
+</view>

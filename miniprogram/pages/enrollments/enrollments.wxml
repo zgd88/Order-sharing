@@ -1,0 +1,97 @@
+<!-- 家长：分段（拼团课 / 我的需求） -->
+<block wx:if="{{!isTeacher}}">
+  <view class="container">
+    <view class="segment-bar">
+      <view class="segment-item {{segment === 'enroll' ? 'active' : ''}}" data-segment="enroll" bindtap="onSegment">拼团课</view>
+      <view class="segment-item {{segment === 'demands' ? 'active' : ''}}" data-segment="demands" bindtap="onSegment">我的需求</view>
+    </view>
+
+    <!-- 拼团参团 -->
+    <block wx:if="{{segment === 'enroll'}}">
+      <view wx:if="{{loaded && !enrollments.length}}" class="empty">
+        <view>还没有参团记录</view>
+        <view class="empty-sub">去首页看看附近的拼好课吧</view>
+      </view>
+      <view class="card enroll-card" wx:for="{{enrollments}}" wx:key="id" data-id="{{item.course.id}}" bindtap="onEnrollTap">
+        <view class="e-head">
+          <view class="e-title">{{item.course.title}}</view>
+          <view class="tag {{item.statusInfo.color === 'gray' ? 'tag-gray' : 'tag-green'}}">{{item.statusInfo.text}}</view>
+        </view>
+        <view class="e-meta">
+          <text class="tag tag-blue">{{item.course.subject}}</text>
+          <text class="e-teacher">{{item.course.teacherName}}老师</text>
+          <text class="e-time">{{item.startText}}开课</text>
+        </view>
+        <view class="e-row">
+          <view>
+            <view class="e-price-label">当前应付</view>
+            <view class="e-price price">¥{{item.priceText}}<text class="unit">/节</text></view>
+          </view>
+          <view class="e-progress">
+            <view class="e-progress-text">{{item.course.enrolledCount}}/{{item.course.maxStudents}}人 · {{item.courseStatusInfo.text}}</view>
+            <view class="progress-bar"><view class="progress-inner" style="width: {{item.course.enrolledCount / item.course.maxStudents * 100}}%"></view></view>
+          </view>
+        </view>
+        <view wx:if="{{item.refundsView.length}}" class="e-refunds">
+          <view class="e-refund-row" wx:for="{{item.refundsView}}" wx:for-item="r" wx:key="id">
+            <text>{{r.typeText}} ¥{{r.amountText}}</text>
+            <text class="refund-paid">{{r.statusText}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 我的需求 -->
+    <block wx:else>
+      <button class="demand-publish-btn" bindtap="goDemandForm">＋ 发布找老师需求</button>
+      <view wx:if="{{loaded && !demands.length}}" class="empty">
+        <view>还没有发布过需求</view>
+        <view class="empty-sub">发布需求，让认证老师来投递简历</view>
+      </view>
+      <view class="card" wx:for="{{demands}}" wx:key="id" data-id="{{item.id}}" bindtap="onDemandTap">
+        <view class="e-head">
+          <view class="e-title">{{item.subject}}{{item.grade ? ' · ' + item.grade : ''}}家教</view>
+          <view class="tag {{item.statusInfo.cls}}">{{item.statusInfo.text}}</view>
+        </view>
+        <view class="e-meta">
+          <text class="tag tag-blue">¥{{item.rateText}}/小时</text>
+          <text class="e-time">{{item.city}}</text>
+          <text class="e-time">收到 {{item.applicationCount}} 份简历</text>
+        </view>
+        <view class="e-link">查看详情与投递 ›</view>
+      </view>
+    </block>
+  </view>
+</block>
+
+<!-- 老师：我的课程 -->
+<block wx:else>
+  <view class="container">
+    <view class="t-head">
+      <view class="t-title">我的课程</view>
+      <button class="t-publish" bindtap="goPublish">＋ 发布拼好课</button>
+    </view>
+    <view wx:if="{{loaded && !teacherCourses.length}}" class="empty">
+      <view>还没有发布课程</view>
+      <view class="empty-sub">发布一门拼好课，让家长帮你拉人</view>
+    </view>
+    <view class="card" wx:for="{{teacherCourses}}" wx:key="id" data-id="{{item.id}}" bindtap="onTeacherCourseTap">
+      <view class="e-head">
+        <view class="e-title">{{item.title}}</view>
+        <view class="tag {{item.statusInfo.color === 'gray' ? 'tag-gray' : item.statusInfo.color === '#52C41A' ? 'tag-green' : item.statusInfo.color === '#FA8C16' ? 'tag-orange' : 'tag-blue'}}">{{item.statusInfo.text}}</view>
+      </view>
+      <view class="e-meta">
+        <text class="tag tag-blue">{{item.subject}}</text>
+        <text class="e-time">{{item.startText}}开课</text>
+      </view>
+      <view class="e-row">
+        <view class="e-progress">
+          <view class="e-progress-text">报名 {{item.enrolled_count}}/{{item.max_students}}人</view>
+          <view class="progress-bar"><view class="progress-inner" style="width: {{item.enrolled_count / item.max_students * 100}}%"></view></view>
+        </view>
+        <view class="e-price price">¥{{item.priceText}}<text class="unit">/节</text></view>
+      </view>
+      <view class="e-link">查看报名名单 ›</view>
+    </view>
+  </view>
+</block>

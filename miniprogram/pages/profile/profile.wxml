@@ -1,0 +1,54 @@
+<view class="container" wx:if="{{user}}">
+  <view class="card user-card">
+    <image class="avatar big" src="{{user.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
+    <view class="user-info">
+      <view class="user-name" bindtap="onEditNickname">{{user.nickname}} <text class="edit-icon">✎</text></view>
+      <view class="user-role">
+        <text class="tag {{isTeacher ? 'tag-orange' : 'tag-blue'}}">{{roleText}}身份</text>
+        <text wx:if="{{isTeacher && profile && profile.auditStatus === 'approved'}}" class="tag tag-green">已认证</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 老师认证入口 -->
+  <view wx:if="{{isTeacher}}" class="card">
+    <view wx:if="{{!profile}}" class="cell" bindtap="goApply">
+      <text>📝 资质认证 <text class="cell-badge">未认证</text></text>
+      <view class="arrow"></view>
+    </view>
+    <view wx:elif="{{profile.auditStatus === 'pending'}}" class="cell" bindtap="goApply">
+      <text>📝 资质认证 <text class="cell-badge pending">审核中</text></text>
+      <view class="arrow"></view>
+    </view>
+    <view wx:elif="{{profile.auditStatus === 'rejected'}}" class="cell" bindtap="goApply">
+      <text>📝 资质认证 <text class="cell-badge rejected">被驳回</text></text>
+      <view class="arrow"></view>
+    </view>
+    <view wx:else class="cell">
+      <text>📝 资质认证 <text class="cell-badge approved">已通过</text></text>
+    </view>
+    <view class="cell" bindtap="goEarnings">
+      <text>💰 收益明细</text>
+      <view class="arrow"></view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="cell" bindtap="switchRole">
+      <text>🔄 切换身份</text>
+      <view class="cell-right">
+        <text class="cell-sub">切换到{{isTeacher ? '家长' : '老师'}}</text>
+        <view class="arrow"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="cell">
+      <text>ℹ️ 关于</text>
+      <text class="cell-sub">同城教培拼好课 v1.0</text>
+    </view>
+  </view>
+
+  <button class="logout-btn" bindtap="logout">退出登录</button>
+</view>

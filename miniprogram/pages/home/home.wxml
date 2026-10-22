@@ -1,0 +1,181 @@
+<!-- 家长视图：拼好课大厅 -->
+<block wx:if="{{!isTeacher}}">
+  <view class="container">
+    <swiper wx:if="{{banners.length}}" class="banner-swiper" indicator-dots autoplay circular indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff">
+      <swiper-item wx:for="{{banners}}" wx:key="id" data-link-type="{{item.linkType}}" data-link-value="{{item.linkValue}}" bindtap="onBannerTap">
+        <image class="banner-img" src="{{item.imageUrl}}" mode="aspectFill" />
+        <view class="banner-title">{{item.title}}</view>
+      </swiper-item>
+    </swiper>
+
+    <view class="filter-bar">
+      <picker class="filter-picker" range="{{subjects}}" value="{{subjectIndex}}" bindchange="onSubjectChange">
+        <view class="filter-item">{{subject}} ▾</view>
+      </picker>
+      <picker class="filter-picker" range="{{grades}}" value="{{gradeIndex}}" bindchange="onGradeChange">
+        <view class="filter-item">{{grade}} ▾</view>
+      </picker>
+      <view class="region-trigger {{region ? 'active' : ''}}" bindtap="openRegion">
+        <text>📍</text>
+        <text class="region-text {{region ? '' : 'placeholder'}}">{{regionText}}</text>
+        <text class="region-arrow">▾</text>
+      </view>
+    </view>
+
+    <!-- 省/市/区县三级联动选择面板 -->
+    <view wx:if="{{showRegion}}" class="region-mask" bindtap="closeRegion" catchtouchmove="noop">
+      <view class="region-panel" catchtap="noop">
+        <view class="region-title">选择地区<text class="region-title-sub">（城市即可确定，区县可选）</text></view>
+        <view class="region-cols">
+          <scroll-view scroll-y class="region-col" enhanced show-scrollbar="{{false}}">
+            <view
+              wx:for="{{provinces}}"
+              wx:key="name"
+              class="col-item {{provinceIndex === index ? 'active' : ''}}"
+              data-col="province"
+              data-idx="{{index}}"
+              bindtap="onColTap"
+            >{{item.name}}</view>
+          </scroll-view>
+          <scroll-view scroll-y class="region-col" enhanced show-scrollbar="{{false}}">
+            <view
+              wx:for="{{citiesView}}"
+              wx:key="*this"
+              class="col-item {{cityIndex === index ? 'active' : ''}}"
+              data-col="city"
+              data-idx="{{index}}"
+              bindtap="onColTap"
+            >{{item}}</view>
+          </scroll-view>
+          <scroll-view scroll-y class="region-col" enhanced show-scrollbar="{{false}}">
+            <view
+              wx:for="{{areasView}}"
+              wx:key="*this"
+              class="col-item {{areaIndex === index ? 'active' : ''}}"
+              data-col="area"
+              data-idx="{{index}}"
+              bindtap="onColTap"
+            >{{item}}</view>
+          </scroll-view>
+        </view>
+        <view class="region-footer">
+          <button class="region-reset" bindtap="resetRegion">重置</button>
+          <button class="region-confirm" bindtap="confirmRegion">确定</button>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{loading && !loaded}}" class="empty">加载中...</view>
+    <view wx:if="{{loaded && !list.length}}" class="empty">暂无拼好课，快去邀请老师发布吧</view>
+
+    <view class="course-card card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="onCourseTap">
+      <view class="course-head">
+        <view class="course-title">{{item.title}}</view>
+        <view class="tag {{item.needToForm > 0 ? 'tag-orange' : 'tag-green'}}">{{item.needToFormText}}</view>
+      </view>
+      <view class="course-meta">
+        <text class="tag tag-blue">{{item.subject}}</text>
+        <text wx:if="{{item.grade}}" class="tag tag-gray">{{item.grade}}</text>
+        <text wx:if="{{item.distanceText}}" class="tag tag-green">{{item.distanceText}}</text>
+      </view>
+      <view class="course-row">
+        <view class="teacher-info">
+          <image class="avatar" src="{{item.teacherAvatar || '/images/default-avatar.png'}}" mode="aspectFill" />
+          <view>
+            <view class="teacher-name">{{item.teacherName}}老师</view>
+            <view class="teacher-meta">{{item.teacherSubject}} · {{item.yearsExperience}}年教龄</view>
+          </view>
+        </view>
+        <view class="course-price">
+          <text class="price"><text class="unit">¥</text>{{item.priceText}}</text>
+          <text class="price-note">/节</text>
+        </view>
+      </view>
+      <view class="course-row course-bottom">
+        <view class="course-info">👥 {{item.enrolledCount}}/{{item.maxStudents}}人 · ⏰ {{item.startText}}开课</view>
+        <view class="course-info">📉 最低<text class="price">¥{{item.lowestPriceText}}</text></view>
+      </view>
+    </view>
+  </view>
+</block>
+
+<!-- 老师视图：工作台 -->
+<block wx:else>
+  <view class="container">
+    <view class="workbench-hero card">
+      <view class="hero-top">
+        <view>
+          <view class="hero-title">老师工作台</view>
+          <view class="hero-sub">发布拼好课，让家长帮你拉人拼团</view>
+        </view>
+        <button wx:if="{{profile && profile.auditStatus === 'approved'}}" class="publish-btn" bindtap="goPublish">＋ 发布拼好课</button>
+      </view>
+      <view wx:if="{{profile && profile.auditStatus === 'approved'}}" class="stats-row">
+        <view class="stat-item">
+          <view class="stat-num">¥{{stats.grossYuan}}</view>
+          <view class="stat-label">累计报名金额</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-num">¥{{stats.netYuan}}</view>
+          <view class="stat-label">预计收益(扣{{stats.ratePercent}}%抽成)</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-num">{{teacherCourses.length}}</view>
+          <view class="stat-label">我的课程</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 认证引导 -->
+    <view wx:if="{{!profile || profile.auditStatus !== 'approved'}}" class="apply-card card" bindtap="goApply">
+      <view class="apply-icon">📝</view>
+      <view class="apply-info">
+        <view class="apply-title" wx:if="{{!profile}}">完成资质认证，开启招生</view>
+        <view class="apply-title" wx:elif="{{profile.auditStatus === 'pending'}}">认证审核中，请耐心等待</view>
+        <view class="apply-title" wx:elif="{{profile.auditStatus === 'rejected'}}">认证被驳回：{{profile.rejectReason}}</view>
+        <view class="apply-desc" wx:if="{{!profile || profile.auditStatus === 'rejected'}}">上传教师资格证/学历证，平台审核通过后即可发布课程</view>
+        <view class="apply-desc" wx:elif="{{profile.auditStatus === 'pending'}}">平台将在 1-2 个工作日内完成审核</view>
+      </view>
+      <view class="arrow"></view>
+    </view>
+
+    <!-- 快捷入口 -->
+    <view class="quick-grid">
+      <view class="quick-item" bindtap="goDemandHall">
+        <view class="quick-icon">📋</view>
+        <view class="quick-label">需求大厅</view>
+      </view>
+      <view class="quick-item" bindtap="goMyApplications">
+        <view class="quick-icon">📨</view>
+        <view class="quick-label">我的投递</view>
+      </view>
+      <view class="quick-item" bindtap="goMyCourses">
+        <view class="quick-icon">📚</view>
+        <view class="quick-label">我的课程</view>
+      </view>
+    </view>
+    <view class="quick-grid">
+      <view class="quick-item" bindtap="goNotifications">
+        <view class="quick-icon">🔔</view>
+        <view class="quick-label">消息</view>
+      </view>
+      <view class="quick-item" bindtap="goEarnings">
+        <view class="quick-icon">💰</view>
+        <view class="quick-label">收益明细</view>
+      </view>
+      <view class="quick-item" bindtap="goApply">
+        <view class="quick-icon">🎓</view>
+        <view class="quick-label">资质认证</view>
+      </view>
+    </view>
+
+    <view wx:if="{{recentCourses.length}}" class="section-title">最近课程</view>
+    <view class="card t-course" wx:for="{{recentCourses}}" wx:key="id" data-id="{{item.id}}" bindtap="goMyCourses">
+      <view>
+        <view class="t-course-title">{{item.title}}</view>
+        <view class="t-course-meta">👥 {{item.enrolled_count}}/{{item.max_students}}人 · ¥{{item.priceText}}/节</view>
+      </view>
+      <view class="tag {{item.status === 'recruiting' ? 'tag-blue' : item.status === 'formed' ? 'tag-green' : 'tag-gray'}}">{{item.statusInfo.text}}</view>
+    </view>
+  </view>
+</block>

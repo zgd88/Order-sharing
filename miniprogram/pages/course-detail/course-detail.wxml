@@ -1,0 +1,73 @@
+<view wx:if="{{!loading && course}}">
+  <view class="head card">
+    <view class="title">{{course.title}}</view>
+    <view class="tags">
+      <text class="tag tag-blue">{{course.subject}}</text>
+      <text wx:if="{{course.grade}}" class="tag tag-gray">{{course.grade}}</text>
+      <text class="tag {{course.status === 'formed' ? 'tag-green' : course.status === 'recruiting' ? 'tag-orange' : 'tag-gray'}}">{{statusText}}</text>
+    </view>
+    <view class="price-line">
+      <text class="price big"><text class="unit">¥</text>{{currentPriceText}}</text>
+      <text class="per">/节 · 当前价</text>
+      <text class="hint" wx:if="{{course.nextTierHint}}">🔥 {{course.nextTierHint.text}}</text>
+    </view>
+  </view>
+
+  <!-- 阶梯价目表 -->
+  <view class="card">
+    <view class="section-title">阶梯拼团价</view>
+    <view class="tier-list">
+      <view class="tier-row {{item.isCurrent ? 'current' : ''}}" wx:for="{{tiersView}}" wx:key="minPeople">
+        <view class="tier-count">满 {{item.minPeople}} 人</view>
+        <view class="tier-price">¥{{item.priceText}}/节</view>
+        <view wx:if="{{item.isCurrent}}" class="tag tag-green">当前</view>
+      </view>
+    </view>
+    <view class="tier-tip">💡 先按当前档价参团，人数增加自动降价，差价原路退还</view>
+  </view>
+
+  <!-- 拼团进度 -->
+  <view class="card">
+    <view class="section-title">拼团进度</view>
+    <view class="progress-bar">
+      <view class="progress-inner" style="width: {{course.enrolledCount / course.maxStudents * 100}}%"></view>
+    </view>
+    <view class="progress-meta">
+      <text>已参团 {{course.enrolledCount}} 人</text>
+      <text class="{{course.needToForm > 0 ? 'orange' : 'green'}}">{{needToFormText}}</text>
+    </view>
+    <view class="progress-meta sub">满 {{course.minStudents}} 人成团 · 上限 {{course.maxStudents}} 人 · 报名截止 {{deadlineText}}</view>
+  </view>
+
+  <!-- 老师信息 -->
+  <view class="card">
+    <view class="section-title">授课老师</view>
+    <view class="teacher-row">
+      <image class="avatar" src="{{course.teacherAvatar || '/images/default-avatar.png'}}" mode="aspectFill" />
+      <view class="teacher-info">
+        <view class="teacher-name">{{course.teacherName}}老师</view>
+        <view class="teacher-meta">{{course.teacherSubject}} · {{course.yearsExperience}}年教龄</view>
+        <view wx:if="{{course.teacherIntro}}" class="teacher-intro">{{course.teacherIntro}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 课程信息 -->
+  <view class="card">
+    <view class="section-title">课程信息</view>
+    <view class="info-row"><text class="info-label">📅 时间</text><text>{{startText}} 至 {{endText}}</text></view>
+    <view class="info-row"><text class="info-label">📍 地点</text><text>{{course.address}}</text></view>
+    <view class="info-row"><text class="info-label">📖 大纲</text><text class="outline">{{course.outline}}</text></view>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="share-btn" bindtap="onShare">
+      <view class="share-icon">📣</view>
+      <view class="share-text">生成海报</view>
+    </view>
+    <button class="join-btn {{joined ? 'joined' : ''}}" disabled="{{!canJoin}}" bindtap="onJoin">
+      {{joined ? '已参团' : (canJoin ? '立即参团' : '不可参团')}}
+    </button>
+  </view>
+</view>
+<view wx:if="{{loading}}" class="empty">加载中...</view>

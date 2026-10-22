@@ -1,0 +1,18 @@
+<view class="container">
+  <view wx:if="{{!loading && !list.length}}" class="empty">
+    <view>还没有投递记录</view>
+    <view class="empty-sub">去需求大厅看看家长的找老师需求</view>
+  </view>
+
+  <view class="card" wx:for="{{list}}" wx:key="id">
+    <view class="a-head">
+      <view class="a-title">{{item.subject}}{{item.grade ? ' · ' + item.grade : ''}}家教</view>
+      <view class="tag {{item.statusInfo.cls}}">{{item.statusInfo.text}}</view>
+    </view>
+    <view class="a-meta">💰 ¥{{item.rateText}}/小时 · 📍 {{item.addressDisplay}}</view>
+    <view class="a-foot">
+      <text class="a-desc">{{item.statusInfo.desc}}</text>
+      <text class="a-time">{{item.timeText}}</text>
+    </view>
+  </view>
+</view>

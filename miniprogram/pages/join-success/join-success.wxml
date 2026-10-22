@@ -1,0 +1,30 @@
+<view class="success-page" wx:if="{{course}}">
+  <view class="icon">🎉</view>
+  <view class="title">参团成功！</view>
+  <view class="sub">{{course.title}}</view>
+
+  <view class="price-card">
+    <view class="price-label">当前价格</view>
+    <view class="price-num"><text class="unit">¥</text>{{priceText}}<text class="per">/节</text></view>
+    <view class="refund-tip">💡 人数增加后降价，差价自动原路退还</view>
+  </view>
+
+  <view class="progress-card">
+    <view class="progress-row">
+      <text>拼团进度</text>
+      <text class="{{formed ? 'green' : 'orange'}}">{{needToFormText}}</text>
+    </view>
+    <view class="progress-bar">
+      <view class="progress-inner" style="width: {{course.enrolledCount / course.maxStudents * 100}}%"></view>
+    </view>
+    <view class="progress-num">{{course.enrolledCount}}/{{course.maxStudents}} 人</view>
+  </view>
+
+  <button class="share-big" bindtap="goPoster">📣 生成海报，邀请好友参团</button>
+  <button class="share-big plain" open-type="share">分享给微信好友</button>
+  <view class="links">
+    <text bindtap="goMine">查看我的参团</text>
+    <text class="divider">|</text>
+    <text bindtap="goHome">回到首页</text>
+  </view>
+</view>

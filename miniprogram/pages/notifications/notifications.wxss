@@ -1,0 +1,56 @@
+.unread-bar {
+  background: rgba(250, 140, 22, 0.1);
+  color: #FA8C16;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  font-size: 26rpx;
+  margin-bottom: 20rpx;
+}
+
+.notice-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  position: relative;
+}
+
+.notice-card.unread {
+  background: #fdf9f0;
+}
+
+.n-icon {
+  font-size: 44rpx;
+  flex-shrink: 0;
+}
+
+.n-body {
+  flex: 1;
+}
+
+.n-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+}
+
+.n-content {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+.n-time {
+  font-size: 22rpx;
+  color: #bbb;
+  margin-top: 10rpx;
+}
+
+.n-dot {
+  position: absolute;
+  top: 28rpx;
+  right: 24rpx;
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #F5222D;
+}

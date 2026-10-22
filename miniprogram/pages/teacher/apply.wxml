@@ -1,0 +1,106 @@
+<view class="container">
+  <!-- 状态提示 -->
+  <view wx:if="{{profile && profile.auditStatus === 'pending'}}" class="status-card pending">
+    ⏳ 认证审核中：平台将在 1-2 个工作日内完成审核
+  </view>
+  <view wx:elif="{{profile && profile.auditStatus === 'approved'}}" class="status-card approved">
+    ✅ 认证已通过，可以发布拼好课、投递家长需求了
+  </view>
+  <view wx:elif="{{profile && profile.auditStatus === 'rejected'}}" class="status-card rejected">
+    ❌ 认证被驳回：{{profile.rejectReason}}，请修改后重新提交
+  </view>
+
+  <view wx:if="{{!profile || profile.auditStatus !== 'approved'}}" class="card form-card">
+    <view class="form-title">资质认证</view>
+    <view class="form-item">
+      <view class="form-label">真实姓名</view>
+      <input class="form-input" placeholder="请输入真实姓名" value="{{form.realName}}" data-key="realName" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <view class="form-label">联系电话</view>
+      <input class="form-input" type="number" maxlength="11" placeholder="平台客服撮合时联系您使用" value="{{form.phone}}" data-key="phone" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <view class="form-label">证件类型</view>
+      <picker range="{{certTypes}}" range-key="label" value="{{certTypeIndex}}" bindchange="onCertType">
+        <view class="form-picker">{{certTypes[certTypeIndex].label}} ▾</view>
+      </picker>
+    </view>
+    <view class="form-item">
+      <view class="form-label">授课科目（多选）</view>
+      <view class="multi-select" data-key="subject" bindtap="openPicker">
+        <text class="{{subjectText ? '' : 'placeholder'}}">{{subjectText || '点击选择科目'}}</text>
+        <view class="arrow"></view>
+      </view>
+    </view>
+    <view class="form-item-row">
+      <view class="form-item half">
+        <view class="form-label">学历</view>
+        <picker range="{{educations}}" value="{{educationIndex}}" bindchange="onEducation">
+          <view class="form-picker">{{educations[educationIndex]}} ▾</view>
+        </picker>
+      </view>
+      <view class="form-item half">
+        <view class="form-label">专业</view>
+        <input class="form-input" placeholder="如：数学与应用数学" value="{{form.major}}" data-key="major" bindinput="onField" />
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">毕业院校</view>
+      <input class="form-input" placeholder="如：贵州师范大学" value="{{form.graduateSchool}}" data-key="graduateSchool" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <view class="form-label">可授年级（多选）</view>
+      <view class="multi-select" data-key="grades" bindtap="openPicker">
+        <text class="{{gradesText ? '' : 'placeholder'}}">{{gradesText || '点击选择年级'}}</text>
+        <view class="arrow"></view>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">教龄（年）</view>
+      <input class="form-input" type="number" placeholder="如：5" value="{{form.yearsExperience}}" data-key="yearsExperience" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <view class="form-label">个人简介</view>
+      <textarea class="form-textarea" placeholder="教学特色、获奖经历等（选填）" value="{{form.intro}}" data-key="intro" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <view class="form-label">证件照片（选填）</view>
+      <view class="upload-row">
+        <view class="upload-box" data-key="certImageUrl" bindtap="chooseImage">
+          <image wx:if="{{form.certImageUrl}}" class="upload-img" src="{{form.certImageUrl}}" mode="aspectFill" />
+          <view wx:else class="upload-plus">＋<view class="upload-text">证件(选填)</view></view>
+        </view>
+        <view class="upload-box" data-key="degreeImageUrl" bindtap="chooseImage">
+          <image wx:if="{{form.degreeImageUrl}}" class="upload-img" src="{{form.degreeImageUrl}}" mode="aspectFill" />
+          <view wx:else class="upload-plus">＋<view class="upload-text">学历证(选填)</view></view>
+        </view>
+      </view>
+    </view>
+    <button class="btn-primary submit-btn" bindtap="submit">提交审核</button>
+    <view class="form-tip">提交后由平台人工审核，审核通过即可发布课程、投递需求</view>
+  </view>
+
+  <!-- 多选弹层 -->
+  <view wx:if="{{pickerOpen}}" class="picker-mask" bindtap="closePicker" catchtouchmove="noop">
+    <view class="picker-panel" catchtap="noop">
+      <view class="picker-title">{{pickerOpen === 'subject' ? '选择授课科目' : '选择可授年级'}}<text class="picker-sub">可多选</text></view>
+      <scroll-view scroll-y class="picker-list">
+        <view
+          class="picker-option {{item.checked ? 'checked' : ''}}"
+          wx:for="{{pickerOptions}}"
+          wx:key="name"
+          data-idx="{{index}}"
+          bindtap="toggleOption"
+        >
+          <text>{{item.name}}</text>
+          <view class="checkbox">{{item.checked ? '✓' : ''}}</view>
+        </view>
+      </scroll-view>
+      <view class="picker-footer">
+        <button class="picker-cancel" bindtap="closePicker">取消</button>
+        <button class="picker-confirm" bindtap="confirmPicker">确定</button>
+      </view>
+    </view>
+  </view>
+</view>

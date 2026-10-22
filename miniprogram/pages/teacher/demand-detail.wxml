@@ -1,0 +1,26 @@
+<view class="container" wx:if="{{!loading && order}}">
+  <view class="card head-card">
+    <view class="head-title">{{order.subject}}{{order.grade ? ' · ' + order.grade : ''}}家教</view>
+    <view class="head-rate">¥{{rateText}}<text class="unit">/小时</text></view>
+    <view class="head-meta">📍 {{order.addressDisplay}}</view>
+    <view class="privacy-note">🔒 为保护家长隐私，仅显示区域位置，电话与门牌号仅平台客服可见</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">投递前建议</view>
+    <view class="tip-text">完善您的学历、专业与教学经历，能显著提高被家长选中的概率。</view>
+    <view class="form-item">
+      <view class="form-label">投递留言（授课经历/自荐，选填）</view>
+      <textarea class="note-input" placeholder="如：5年教龄，带过20+名学生，擅长基础提分…" value="{{note}}" bindinput="onNote" disabled="{{applied}}" />
+    </view>
+  </view>
+
+  <view class="bottom-bar">
+    <button
+      class="apply-btn"
+      disabled="{{applied}}"
+      bindtap="apply"
+    >{{applied ? '已投递，等待家长查看' : '投递简历'}}</button>
+  </view>
+</view>
+<view wx:if="{{loading}}" class="empty">加载中...</view>

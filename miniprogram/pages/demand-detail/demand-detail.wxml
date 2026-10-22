@@ -1,0 +1,55 @@
+<view class="container" wx:if="{{!loading && order}}">
+  <view class="card head-card">
+    <view class="head-row">
+      <view class="head-title">{{order.subject}} {{order.grade ? '· ' + order.grade : ''}}家教</view>
+      <view class="tag {{statusTagClass}}">{{statusText}}</view>
+    </view>
+    <view class="head-meta">
+      <view class="meta-item">💰 课时费：<text class="price">¥{{rateText}}</text>/小时</view>
+      <view class="meta-item">📍 地点：{{order.address}}</view>
+      <view class="meta-item">📞 联系电话：{{order.phone}}</view>
+    </view>
+    <view wx:if="{{order.status === 'locked'}}" class="locked-tip">🔒 订单已锁定，平台客服将尽快与您和老师联系</view>
+  </view>
+
+  <!-- 收到的简历 -->
+  <view class="card">
+    <view class="section-title">
+      收到的简历（{{applications.length}}）
+      <text wx:if="{{order.status === 'locked'}}" class="stop-text">· 已停止招募</text>
+    </view>
+    <view wx:if="{{!applications.length}}" class="empty small">还没有老师投递，请耐心等待</view>
+
+    <view
+      class="resume-card {{order.status !== 'recruiting' && app.id !== order.selectedApplicationId ? 'disabled' : ''}}"
+      wx:for="{{applications}}"
+      wx:key="id"
+      wx:for-item="app"
+    >
+      <view class="resume-head">
+        <image class="avatar" src="{{app.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
+        <view class="resume-info">
+          <view class="resume-name">
+            {{app.nickname}}
+            <text wx:if="{{app.id === order.selectedApplicationId}}" class="tag tag-green">已选择</text>
+            <text wx:if="{{app.status === 'invalid'}}" class="tag tag-gray">已失效</text>
+          </view>
+          <view class="resume-meta">{{app.yearsExperience}}年教龄 · {{app.education || '学历未填'}}{{app.major ? ' · ' + app.major : ''}} · {{app.teacherSubject}}</view>
+        </view>
+      </view>
+      <view wx:if="{{app.teacherIntro || app.note}}" class="resume-intro">
+        <view wx:if="{{app.teacherIntro}}">自我介绍：{{app.teacherIntro}}</view>
+        <view wx:if="{{app.note}}">授课经历：{{app.note}}</view>
+      </view>
+      <button
+        wx:if="{{order.status === 'recruiting'}}"
+        class="select-btn"
+        data-app="{{app}}"
+        bindtap="onSelectTeacher"
+      >选择该老师</button>
+    </view>
+  </view>
+
+  <button wx:if="{{order.status === 'recruiting'}}" class="close-btn" bindtap="onClose">关闭需求</button>
+</view>
+<view wx:if="{{loading}}" class="empty">加载中...</view>

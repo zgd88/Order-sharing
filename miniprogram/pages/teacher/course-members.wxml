@@ -1,0 +1,40 @@
+<view class="container" wx:if="{{!loading && course}}">
+  <view class="card head-card">
+    <view class="head-title">{{course.title}}</view>
+    <view class="head-meta">
+      <text class="tag tag-blue">{{course.subject}}</text>
+      <text class="tag {{course.status === 'formed' ? 'tag-green' : course.status === 'recruiting' ? 'tag-orange' : 'tag-gray'}}">{{statusInfo.text}}</text>
+    </view>
+    <view class="head-stats">
+      <view class="head-stat">
+        <view class="head-stat-num">{{course.enrolled_count}}/{{course.max_students}}</view>
+        <view class="head-stat-label">报名人数</view>
+      </view>
+      <view class="head-stat">
+        <view class="head-stat-num price">¥{{priceText}}</view>
+        <view class="head-stat-label">当前单价</view>
+      </view>
+      <view class="head-stat">
+        <view class="head-stat-num price">¥{{grossText}}</view>
+        <view class="head-stat-label">报名总额</view>
+      </view>
+    </view>
+    <view class="head-tiers">阶梯：{{tiersView}}</view>
+    <button wx:if="{{course.status === 'recruiting' || course.status === 'formed'}}" class="share-btn" open-type="share">📣 分享课程拉人拼团</button>
+    <button wx:if="{{course.status === 'recruiting' || course.status === 'formed'}}" class="cancel-btn" bindtap="onCancel">取消课程</button>
+  </view>
+
+  <view class="card">
+    <view class="form-title">已报名家长（{{members.length}}人）</view>
+    <view wx:if="{{!members.length}}" class="empty small">还没有家长报名，快去分享吧</view>
+    <view class="member-row" wx:for="{{members}}" wx:key="enrollment_id">
+      <image class="avatar" src="{{item.avatar_url || '/images/default-avatar.png'}}" mode="aspectFill" />
+      <view class="member-info">
+        <view class="member-name">{{item.nickname}}</view>
+        <view class="member-meta">第 {{item.join_seq}} 位报名</view>
+      </view>
+      <view class="member-price price">¥{{item.priceText}}</view>
+    </view>
+  </view>
+</view>
+<view wx:if="{{loading}}" class="empty">加载中...</view>

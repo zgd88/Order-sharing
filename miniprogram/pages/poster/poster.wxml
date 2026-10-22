@@ -1,0 +1,11 @@
+<view class="poster-page">
+  <view class="poster-preview">
+    <image wx:if="{{posterPath}}" class="poster-img" src="{{posterPath}}" mode="widthFix" show-menu-by-longpress />
+    <view wx:else class="poster-loading">海报生成中...</view>
+  </view>
+  <view class="poster-actions">
+    <button class="btn-primary" bindtap="savePoster" disabled="{{!posterPath}}">保存海报到相册</button>
+    <button class="btn-plain share-btn" open-type="share">直接分享给好友</button>
+  </view>
+  <canvas type="2d" id="posterCanvas" class="hidden-canvas"></canvas>
+</view>

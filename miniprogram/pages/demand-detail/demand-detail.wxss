@@ -1,0 +1,124 @@
+.head-card {
+  background: linear-gradient(135deg, #4A90E2, #6FA8E8);
+  color: #fff;
+  box-shadow: none;
+}
+
+.head-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  gap: 16rpx;
+}
+
+.head-title {
+  font-size: 36rpx;
+  font-weight: 800;
+  flex: 1;
+}
+
+.head-meta {
+  font-size: 26rpx;
+  opacity: 0.95;
+}
+
+.meta-item {
+  padding: 6rpx 0;
+}
+
+.meta-item .price {
+  color: #fff;
+  font-size: 30rpx;
+}
+
+.locked-tip {
+  margin-top: 20rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  font-size: 24rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  margin-bottom: 20rpx;
+}
+
+.stop-text {
+  font-size: 22rpx;
+  color: #999;
+  font-weight: 400;
+}
+
+.empty.small {
+  padding: 60rpx 0;
+}
+
+.resume-card {
+  border: 2rpx solid #eee;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+.resume-card.disabled {
+  opacity: 0.45;
+  background: #fafafa;
+}
+
+.resume-head {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.resume-info {
+  flex: 1;
+}
+
+.resume-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.resume-meta {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+.resume-intro {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #666;
+  background: #f8f9fb;
+  border-radius: 8rpx;
+  padding: 16rpx;
+  line-height: 1.6;
+}
+
+.select-btn {
+  margin-top: 20rpx;
+  background: #4A90E2;
+  color: #fff;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 80rpx;
+}
+
+.close-btn {
+  margin: 24rpx 0 48rpx;
+  background: #fff;
+  color: #F5222D;
+  border: 2rpx solid #F5222D;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  line-height: 84rpx;
+}

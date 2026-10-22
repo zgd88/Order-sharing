@@ -1,0 +1,58 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/enrollments/enrollments",
+    "pages/profile/profile",
+    "pages/login/login",
+    "pages/course-detail/course-detail",
+    "pages/join-success/join-success",
+    "pages/poster/poster",
+    "pages/demand-form/demand-form",
+    "pages/demand-detail/demand-detail",
+    "pages/location-picker/location-picker",
+    "pages/notifications/notifications",
+    "pages/teacher/apply",
+    "pages/teacher/course-form",
+    "pages/teacher/my-courses",
+    "pages/teacher/course-members",
+    "pages/teacher/earnings",
+    "pages/teacher/demand-hall",
+    "pages/teacher/demand-detail",
+    "pages/teacher/my-applications"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#4A90E2",
+    "navigationBarTitleText": "培学拼课",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#4A90E2",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/enrollments/enrollments",
+        "text": "课程"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于查找你附近的拼好课"
+    }
+  },
+  "requiredPrivateInfos": ["getLocation", "chooseLocation"]
+}

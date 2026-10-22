@@ -1,0 +1,42 @@
+.empty-sub {
+  font-size: 24rpx;
+  margin-top: 12rpx;
+}
+
+.a-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14rpx;
+  gap: 16rpx;
+}
+
+.a-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  flex: 1;
+}
+
+.a-meta {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.a-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14rpx;
+  border-top: 1rpx solid #f5f5f5;
+}
+
+.a-desc {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.a-time {
+  font-size: 22rpx;
+  color: #bbb;
+}

@@ -1,0 +1,380 @@
+.banner-swiper {
+  height: 280rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+  position: relative;
+}
+
+.banner-img {
+  width: 100%;
+  height: 100%;
+}
+
+.banner-title {
+  position: absolute;
+  left: 24rpx;
+  bottom: 16rpx;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 600;
+  text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.4);
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+  flex-wrap: wrap;
+}
+
+.filter-picker {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 12rpx 24rpx;
+  flex-shrink: 0;
+}
+
+.filter-item {
+  font-size: 26rpx;
+  color: #4A90E2;
+  font-weight: 600;
+}
+
+/* 地区选择触发器 */
+.region-trigger {
+  flex: 1;
+  min-width: 280rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 12rpx 24rpx;
+  font-size: 26rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  box-sizing: border-box;
+}
+
+.region-trigger.active {
+  color: #4A90E2;
+  font-weight: 600;
+}
+
+.region-text {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.region-text.placeholder {
+  color: #999;
+}
+
+.region-arrow {
+  color: #bbb;
+  font-size: 22rpx;
+}
+
+/* 三级联动面板 */
+.region-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+}
+
+.region-panel {
+  width: 100%;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  overflow: hidden;
+  animation: slideUp 0.25s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.region-title {
+  padding: 28rpx 32rpx 20rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.region-title-sub {
+  font-size: 22rpx;
+  color: #999;
+  font-weight: 400;
+  margin-left: 16rpx;
+}
+
+.region-cols {
+  display: flex;
+  height: 560rpx;
+}
+
+.region-col {
+  flex: 1;
+  height: 100%;
+  background: #f7f8fa;
+}
+
+.region-col:nth-child(2) {
+  background: #fff;
+  border-left: 1rpx solid #f0f0f0;
+  border-right: 1rpx solid #f0f0f0;
+}
+
+.col-item {
+  padding: 24rpx 24rpx;
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.4;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.col-item.active {
+  color: #4A90E2;
+  font-weight: 700;
+  background: #fff;
+}
+
+.region-col:first-child .col-item.active {
+  background: #fff;
+  border-left: 6rpx solid #4A90E2;
+}
+
+.region-footer {
+  display: flex;
+  gap: 24rpx;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.region-reset,
+.region-confirm {
+  flex: 1;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  line-height: 84rpx;
+  margin: 0;
+}
+
+.region-reset {
+  background: #f5f6f8;
+  color: #666;
+}
+
+.region-confirm {
+  background: #4A90E2;
+  color: #fff;
+  font-weight: 600;
+}
+
+.course-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.course-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.course-meta {
+  display: flex;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+  flex-wrap: wrap;
+}
+
+.course-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.course-bottom {
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f5f5f5;
+}
+
+.teacher-info {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.teacher-name {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.teacher-meta {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+.course-price {
+  text-align: right;
+}
+
+.course-price .price {
+  font-size: 44rpx;
+}
+
+.price-note {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.course-info {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 老师工作台 */
+.workbench-hero {
+  background: linear-gradient(135deg, #4A90E2, #6FA8E8);
+  color: #fff;
+  box-shadow: none;
+}
+
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hero-title {
+  font-size: 40rpx;
+  font-weight: 800;
+}
+
+.hero-sub {
+  font-size: 24rpx;
+  opacity: 0.9;
+  margin-top: 8rpx;
+}
+
+.publish-btn {
+  background: #fff;
+  color: #4A90E2;
+  font-size: 28rpx;
+  font-weight: 700;
+  border-radius: 40rpx;
+  padding: 0 32rpx;
+  line-height: 68rpx;
+  margin: 0;
+}
+
+.stats-row {
+  display: flex;
+  margin-top: 36rpx;
+  text-align: center;
+}
+
+.stat-item {
+  flex: 1;
+}
+
+.stat-num {
+  font-size: 40rpx;
+  font-weight: 800;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  opacity: 0.85;
+  margin-top: 8rpx;
+}
+
+.apply-card {
+  display: flex;
+  align-items: center;
+  border-left: 8rpx solid #FA8C16;
+}
+
+.apply-icon {
+  font-size: 56rpx;
+  margin-right: 24rpx;
+}
+
+.apply-info {
+  flex: 1;
+}
+
+.apply-title {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.apply-desc {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 6rpx;
+}
+
+.quick-grid {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.quick-item {
+  flex: 1;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx 0;
+  text-align: center;
+}
+
+.quick-icon {
+  font-size: 52rpx;
+}
+
+.quick-label {
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #333;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  margin: 8rpx 8rpx 20rpx;
+}
+
+.t-course {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.t-course-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.t-course-meta {
+  font-size: 24rpx;
+  color: #999;
+}

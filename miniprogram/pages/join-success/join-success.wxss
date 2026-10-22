@@ -1,0 +1,124 @@
+.success-page {
+  padding: 60rpx 40rpx;
+  text-align: center;
+}
+
+.icon {
+  font-size: 120rpx;
+}
+
+.title {
+  font-size: 44rpx;
+  font-weight: 800;
+  margin-top: 20rpx;
+}
+
+.sub {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: 12rpx;
+}
+
+.price-card {
+  margin-top: 48rpx;
+  background: linear-gradient(135deg, #4A90E2, #6FA8E8);
+  border-radius: 24rpx;
+  color: #fff;
+  padding: 40rpx;
+}
+
+.price-label {
+  font-size: 24rpx;
+  opacity: 0.85;
+}
+
+.price-num {
+  font-size: 72rpx;
+  font-weight: 800;
+  margin: 8rpx 0 16rpx;
+}
+
+.price-num .unit {
+  font-size: 36rpx;
+}
+
+.price-num .per {
+  font-size: 26rpx;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.refund-tip {
+  font-size: 24rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12rpx;
+  padding: 12rpx 20rpx;
+  text-align: left;
+}
+
+.progress-card {
+  margin-top: 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  text-align: left;
+}
+
+.progress-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.green { color: #52C41A; }
+.orange { color: #FA8C16; }
+
+.progress-bar {
+  height: 20rpx;
+  background: #f0f0f0;
+  border-radius: 10rpx;
+  overflow: hidden;
+}
+
+.progress-inner {
+  height: 100%;
+  background: linear-gradient(90deg, #4A90E2, #52C41A);
+  border-radius: 10rpx;
+}
+
+.progress-num {
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 12rpx;
+}
+
+.share-big {
+  margin-top: 32rpx;
+  background: #F5222D;
+  color: #fff;
+  border-radius: 48rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  line-height: 92rpx;
+}
+
+.share-big.plain {
+  background: #fff;
+  color: #F5222D;
+  border: 2rpx solid #F5222D;
+  line-height: 88rpx;
+}
+
+.links {
+  margin-top: 40rpx;
+  font-size: 26rpx;
+  color: #4A90E2;
+}
+
+.divider {
+  margin: 0 24rpx;
+  color: #ddd;
+}
