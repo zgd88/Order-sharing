@@ -21,3 +21,4 @@ server/uploads/
 ~$*
 .DS_Store
 Thumbs.db
+project.private.config.json
