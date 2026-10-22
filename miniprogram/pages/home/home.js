@@ -58,7 +58,8 @@ Page({
         api.get('/api/banners', {}, { auth: false }).catch(() => []),
         this.fetchCourses(),
       ]);
-      this.setData({ banners: bannerData || [], loaded: true });
+      const banners = (bannerData || []).map((b) => ({ ...b, imageUrl: api.fullUrl(b.imageUrl) }));
+      this.setData({ banners, loaded: true });
       // fetchCourses 内部已 setData
     } catch (e) {
       this.setData({ loaded: true });

@@ -1,5 +1,14 @@
 // 网络请求封装：BASE_URL 可按需修改（微信开发者工具需勾选"不校验合法域名"）
+// 开发环境：http://localhost:3000
+// 生产环境：https://你的域名/peixue （Nginx 配置了 location /peixue/ 反代到后端端口）
 const BASE_URL = 'http://localhost:3000';
+
+// 把后端返回的相对路径（/uploads/xxx）拼成完整地址，供 <image> 使用
+function fullUrl(path) {
+  if (!path) return '';
+  if (/^https?:\/\//.test(path)) return path;
+  return BASE_URL + path;
+}
 
 function request(method, url, data, { auth = true, silent = false } = {}) {
   return new Promise((resolve, reject) => {
@@ -41,6 +50,7 @@ function request(method, url, data, { auth = true, silent = false } = {}) {
 
 module.exports = {
   BASE_URL,
+  fullUrl,
   get: (url, data, opts) => request('GET', url, data, opts),
   post: (url, data, opts) => request('POST', url, data, opts),
   put: (url, data, opts) => request('PUT', url, data, opts),
@@ -57,7 +67,7 @@ module.exports = {
         success(res) {
           try {
             const data = JSON.parse(res.data);
-            if (data.code === 0) resolve(data.data.url);
+            if (data.code === 0) resolve(fullUrl(data.data.url));
             else {
               wx.showToast({ title: data.message || '上传失败', icon: 'none' });
               reject(data);
