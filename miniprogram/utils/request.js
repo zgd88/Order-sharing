@@ -1,7 +1,7 @@
 // 网络请求封装：BASE_URL 可按需修改（微信开发者工具需勾选"不校验合法域名"）
-// 开发环境：http://localhost:3000
-// 生产环境：https://你的域名/peixue （Nginx 配置了 location /peixue/ 反代到后端端口）
-const BASE_URL = 'http://localhost:3000';
+// 生产环境：https://zzggdd.com/peixue （Nginx location /peixue/ 反代到后端 5180）
+// 本地开发时改回：http://localhost:3000
+const BASE_URL = 'https://zzggdd.com/peixue';
 
 // 把后端返回的相对路径（/uploads/xxx）拼成完整地址，供 <image> 使用
 function fullUrl(path) {
