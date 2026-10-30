@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
   nickname      TEXT NOT NULL DEFAULT '微信用户',
   avatar_url    TEXT,
   phone         TEXT,
+  password_hash TEXT,                       -- 注册账号的密码（bcrypt），演示账号为空
   city          TEXT,
   lat           REAL,
   lng           REAL,

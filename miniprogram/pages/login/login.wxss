@@ -1,60 +1,105 @@
 .login-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #4A90E2 0%, #6FA8E8 40%, #f5f6f8 40.1%);
-  padding: 0 40rpx;
+  background: linear-gradient(180deg, #4A90E2 0%, #6FA8E8 32%, #f5f6f8 32.1%);
+  padding: 0 40rpx 60rpx;
 }
 
 .logo-area {
-  padding: 140rpx 0 60rpx;
+  padding: 100rpx 0 40rpx;
   text-align: center;
   color: #fff;
 }
 
 .logo {
-  width: 140rpx;
-  height: 140rpx;
-  line-height: 140rpx;
-  border-radius: 32rpx;
+  width: 120rpx;
+  height: 120rpx;
+  line-height: 120rpx;
+  border-radius: 28rpx;
   background: #fff;
   color: #4A90E2;
-  font-size: 56rpx;
+  font-size: 48rpx;
   font-weight: 800;
-  margin: 0 auto 24rpx;
+  margin: 0 auto 20rpx;
   box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
 }
 
 .slogan {
-  font-size: 40rpx;
+  font-size: 38rpx;
   font-weight: 700;
 }
 
 .sub-slogan {
-  margin-top: 12rpx;
-  font-size: 26rpx;
+  margin-top: 10rpx;
+  font-size: 24rpx;
   opacity: 0.85;
 }
 
-.role-area {
+/* 登录/注册卡片 */
+.auth-box {
   background: #fff;
   border-radius: 24rpx;
-  padding: 40rpx 32rpx;
+  padding: 32rpx;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
 }
 
-.role-title {
-  font-size: 30rpx;
-  font-weight: 600;
+.mode-tabs {
+  display: flex;
+  background: #eef1f5;
+  border-radius: 44rpx;
+  padding: 6rpx;
   margin-bottom: 28rpx;
 }
 
-.role-card {
+.mode-tab {
+  flex: 1;
+  text-align: center;
+  line-height: 72rpx;
+  border-radius: 40rpx;
+  font-size: 30rpx;
+  color: #666;
+}
+
+.mode-tab.active {
+  background: #4A90E2;
+  color: #fff;
+  font-weight: 700;
+}
+
+.input-row {
   display: flex;
   align-items: center;
-  padding: 28rpx 24rpx;
+  background: #f5f6f8;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  height: 96rpx;
+  margin-bottom: 24rpx;
+}
+
+.input-icon {
+  font-size: 30rpx;
+  margin-right: 16rpx;
+}
+
+.input {
+  flex: 1;
+  font-size: 30rpx;
+}
+
+.role-row {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.role-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 22rpx 0;
   border: 3rpx solid #eee;
   border-radius: 16rpx;
-  margin-bottom: 24rpx;
-  transition: all 0.2s;
 }
 
 .role-card.active {
@@ -62,58 +107,58 @@
   background: rgba(74, 144, 226, 0.05);
 }
 
-.role-icon {
-  font-size: 56rpx;
-  margin-right: 24rpx;
+.role-card.mini {
+  padding: 16rpx 0;
 }
 
-.role-info { flex: 1; }
+.role-icon {
+  font-size: 36rpx;
+}
 
 .role-name {
-  font-size: 32rpx;
+  font-size: 28rpx;
   font-weight: 600;
 }
 
-.role-desc {
-  margin-top: 6rpx;
-  font-size: 24rpx;
+.main-btn {
+  width: 100%;
+  margin-top: 8rpx;
+}
+
+.switch-tip {
+  margin-top: 24rpx;
+  text-align: center;
+  font-size: 26rpx;
   color: #999;
 }
 
-.check {
-  width: 36rpx;
-  height: 36rpx;
-  border-radius: 50%;
-  border: 3rpx solid #ddd;
-  box-sizing: border-box;
+.link {
+  color: #4A90E2;
+  font-weight: 600;
 }
 
-.check.checked {
-  border-color: #4A90E2;
-  background: #4A90E2;
-  position: relative;
+/* 演示模式 */
+.demo-area {
+  margin-top: 32rpx;
+  background: rgba(255, 255, 255, 0.7);
+  border: 2rpx dashed #ccc;
+  border-radius: 20rpx;
+  padding: 24rpx 32rpx;
 }
 
-.check.checked::after {
-  content: '';
-  position: absolute;
-  left: 10rpx;
-  top: 5rpx;
-  width: 10rpx;
-  height: 18rpx;
-  border-right: 4rpx solid #fff;
-  border-bottom: 4rpx solid #fff;
-  transform: rotate(45deg);
-}
-
-.login-btn {
-  margin-top: 48rpx;
-  width: 100%;
-}
-
-.tip {
-  margin-top: 24rpx;
+.demo-title {
   text-align: center;
-  color: #bbb;
   font-size: 24rpx;
+  color: #999;
+  margin-bottom: 16rpx;
+}
+
+.demo-btn {
+  background: transparent;
+  color: #999;
+  border: 2rpx solid #ddd;
+  border-radius: 44rpx;
+  font-size: 26rpx;
+  line-height: 72rpx;
+  margin-top: 8rpx;
 }

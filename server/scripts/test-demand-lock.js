@@ -199,6 +199,32 @@ const p4 = db.prepare('SELECT * FROM teacher_profiles WHERE user_id = 201').get(
 assertEq(p4.audit_status, 'pending', '首轮提交进入待审核');
 assertEq(submitProfile(201, baseData).mode, 'direct', '待审核状态再次提交 → 直接模式（原地更新）');
 
+console.log('== 10. 注册/登录/改密 ==');
+const { register, loginByPassword, changePassword } = require('../services/auth');
+const reg = register({ phone: '13900001111', password: 'abc123456', role: 'parent', nickname: '测试家长' });
+assert(!!reg.token && reg.user.phone === '13900001111', '注册成功返回登录态');
+assertEq(reg.user.role, 'parent', '注册身份为家长');
+const dupErr = (() => { try { register({ phone: '13900001111', password: 'xyz123456' }); return null; } catch (e) { return e; } })();
+assert(dupErr && dupErr.message.includes('已注册'), '重复手机号注册被拒');
+const badErr = (() => { try { register({ phone: '13900002222', password: '123' }); return null; } catch (e) { return e; } })();
+assert(badErr && badErr.message.includes('6-20'), '密码过短被拒');
+const badPhone = (() => { try { register({ phone: '12345', password: 'abc123456' }); return null; } catch (e) { return e; } })();
+assert(badPhone && badPhone.message.includes('手机号'), '手机号格式校验');
+const okLogin = loginByPassword('13900001111', 'abc123456');
+assert(!!okLogin.token, '正确密码登录成功');
+assertEq(okLogin.user.nickname, '测试家长', '登录返回用户信息');
+const wrongPwd = (() => { try { loginByPassword('13900001111', 'wrong123'); return null; } catch (e) { return e; } })();
+assert(wrongPwd && wrongPwd.message.includes('账号或密码错误'), '错误密码被拒');
+const noUser = (() => { try { loginByPassword('13900009999', 'abc123456'); return null; } catch (e) { return e; } })();
+assert(noUser && noUser.message.includes('账号或密码错误'), '未注册手机号登录被拒（不泄露账号存在性）');
+const uid = db.prepare('SELECT id FROM users WHERE phone = ?').get('13900001111').id;
+changePassword(uid, 'abc123456', 'newpass789');
+const oldPwd = (() => { try { loginByPassword('13900001111', 'abc123456'); return null; } catch (e) { return e; } })();
+assert(oldPwd && oldPwd.message.includes('账号或密码错误'), '改密后旧密码失效');
+assert(!!loginByPassword('13900001111', 'newpass789').token, '改密后新密码可登录');
+const wrongOld = (() => { try { changePassword(uid, 'badold', 'another123'); return null; } catch (e) { return e; } })();
+assert(wrongOld && wrongOld.message.includes('原密码不正确'), '原密码错误拒绝改密');
+
 console.log(`\n===== 测试结果: ${passed} 通过, ${failed} 失败 =====`);
 db.close();
 try { fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }); } catch (e) { /* ignore */ }

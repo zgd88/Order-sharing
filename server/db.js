@@ -18,6 +18,13 @@ if (!courseCols.includes('province')) {
   console.log('[db] 已迁移：courses 表新增 province 列');
 }
 
+// 轻量迁移：users 增加 password_hash 列（注册账号体系）
+const userCols = db.prepare('PRAGMA table_info(users)').all().map((c) => c.name);
+if (!userCols.includes('password_hash')) {
+  db.exec('ALTER TABLE users ADD COLUMN password_hash TEXT');
+  console.log('[db] 已迁移：users 表新增 password_hash 列');
+}
+
 // 轻量迁移：teacher_profiles 增加 education/major/graduate_school/teachable_grades/证书照片列
 const profileCols = db.prepare('PRAGMA table_info(teacher_profiles)').all().map((c) => c.name);
 for (const [col, def] of [

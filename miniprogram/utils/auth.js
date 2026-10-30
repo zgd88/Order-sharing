@@ -1,4 +1,4 @@
-// 登录态管理：开发期用随机 deviceId 模拟（生产接入 wx.login code）
+// 登录态管理：支持手机号+密码（注册账号）与演示模式（deviceId mock）
 function getDeviceId() {
   let id = wx.getStorageSync('deviceId');
   if (!id) {
@@ -25,6 +25,13 @@ function isTeacher() {
   return !!(u && u.role === 'teacher');
 }
 
+function saveSession(res) {
+  wx.setStorageSync('token', res.token);
+  wx.setStorageSync('user', res.user);
+  return res.user;
+}
+
+// 演示模式登录（开发测试用）
 function login(role, nickname, avatarUrl) {
   return new Promise((resolve, reject) => {
     wx.login({
@@ -34,17 +41,43 @@ function login(role, nickname, avatarUrl) {
           method: 'POST',
           data: { deviceId: getDeviceId(), role, nickname, avatarUrl },
           success(res) {
-            if (res.statusCode === 200 && res.data.code === 0) {
-              const { token, user } = res.data.data;
-              wx.setStorageSync('token', token);
-              wx.setStorageSync('user', user);
-              resolve(user);
-            } else {
-              reject(res.data);
-            }
+            if (res.statusCode === 200 && res.data.code === 0) resolve(saveSession(res.data.data));
+            else reject(res.data);
           },
           fail: reject,
         });
+      },
+      fail: reject,
+    });
+  });
+}
+
+// 手机号+密码登录
+function loginByPhone(phone, password) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: require('./request').BASE_URL + '/api/auth/login',
+      method: 'POST',
+      data: { phone, password },
+      success(res) {
+        if (res.statusCode === 200 && res.data.code === 0) resolve(saveSession(res.data.data));
+        else reject(res.data);
+      },
+      fail: reject,
+    });
+  });
+}
+
+// 注册（手机号+密码），成功即登录
+function register(phone, password, role, nickname) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: require('./request').BASE_URL + '/api/auth/register',
+      method: 'POST',
+      data: { phone, password, role, nickname },
+      success(res) {
+        if (res.statusCode === 200 && res.data.code === 0) resolve(saveSession(res.data.data));
+        else reject(res.data);
       },
       fail: reject,
     });
@@ -56,24 +89,24 @@ function logout() {
   wx.removeStorageSync('user');
 }
 
-// 切换身份：仅更新 role
+// 切换身份：当前账号直接更新 role（支持注册账号）
 function switchRole(role) {
   return new Promise((resolve, reject) => {
     wx.request({
-      url: require('./request').BASE_URL + '/api/auth/login',
+      url: require('./request').BASE_URL + '/api/auth/switch-role',
       method: 'POST',
-      data: { deviceId: getDeviceId(), role },
+      data: { role },
+      header: { Authorization: `Bearer ${getToken()}` },
       success(res) {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          const { token, user } = res.data.data;
-          wx.setStorageSync('token', token);
-          wx.setStorageSync('user', user);
-          resolve(user);
-        } else reject(res.data);
+        if (res.statusCode === 200 && res.data.code === 0) resolve(saveSession(res.data.data));
+        else reject(res.data);
       },
       fail: reject,
     });
   });
 }
 
-module.exports = { getDeviceId, getToken, getUser, isLoggedIn, isTeacher, login, logout, switchRole };
+module.exports = {
+  getDeviceId, getToken, getUser, isLoggedIn, isTeacher,
+  login, loginByPhone, register, logout, switchRole,
+};

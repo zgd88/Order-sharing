@@ -38,6 +38,10 @@
   </view>
 
   <view class="card">
+    <view wx:if="{{user.hasPassword}}" class="cell" bindtap="goChangePassword">
+      <text>🔑 修改密码</text>
+      <view class="arrow"></view>
+    </view>
     <view class="cell" bindtap="switchRole">
       <text>🔄 切换身份</text>
       <view class="cell-right">

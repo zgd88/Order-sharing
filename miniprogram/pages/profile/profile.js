@@ -67,6 +67,9 @@ Page({
   goResume() {
     wx.navigateTo({ url: '/pages/teacher/resume' });
   },
+  goChangePassword() {
+    wx.navigateTo({ url: '/pages/change-password/change-password' });
+  },
   logout() {
     wx.showModal({
       title: '退出登录',

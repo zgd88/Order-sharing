@@ -4,6 +4,7 @@
     "pages/enrollments/enrollments",
     "pages/profile/profile",
     "pages/login/login",
+    "pages/change-password/change-password",
     "pages/course-detail/course-detail",
     "pages/join-success/join-success",
     "pages/poster/poster",
