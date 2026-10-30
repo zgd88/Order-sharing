@@ -112,13 +112,15 @@ for (let i = 1; i <= C; i++) {
   const maxStudents = Math.max(tiers[tiers.length - 1].min_people, minStudents) + rnd(1, 6);
   const grade = pick(GRADES);
   const subject = pick(SUBJECTS);
+  // 报名截止必须早于开课时间
+  const startOffset = rnd(5, 20);
   const cid = mkCourse({
     teacherId: pick(teachers),
     title: `${grade}${subject}${pick(COURSE_TYPES)}${TAG.slice(-3)}${i}`,
     subject, grade, tiers, minStudents, maxStudents,
     cityInfo: pick(CITIES),
-    deadlineOffset: rnd(1, 10),
-    startOffset: rnd(5, 20),
+    deadlineOffset: rnd(1, Math.max(1, startOffset - 1)),
+    startOffset,
   });
   courseIds.push(cid);
   // 随机报名：约 1/3 的课报名到成团

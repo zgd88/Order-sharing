@@ -111,8 +111,11 @@ function mkCourse(teacher) {
   const grade = pick(GRADES);
   const subject = pick(teacher.subjects.split(','));
   const title = `${grade}${subject}${pick(COURSE_TYPES)}`;
-  const deadline = now + rnd(1, 10) * DAY;
-  const start = now + rnd(5, 20) * DAY;
+  // 报名截止必须早于开课时间
+  const startOffset = rnd(5, 20);
+  const deadlineOffset = rnd(1, Math.max(1, startOffset - 1));
+  const deadline = now + deadlineOffset * DAY;
+  const start = now + startOffset * DAY;
   const end = start + 2 * 3600e3;
   const address = cityInfo.addr.replace('{N}', rnd(1, 500));
   const ins = db.prepare(
