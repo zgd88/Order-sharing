@@ -78,6 +78,8 @@
       <text class="tag {{profile.auditStatus === 'approved' ? 'tag-green' : profile.auditStatus === 'pending' ? 'tag-orange' : 'tag-red'}}">
         {{profile.auditStatus === 'approved' ? '已通过' : profile.auditStatus === 'pending' ? '审核中' : '已驳回'}}
       </text>
+      <text wx:if="{{profile.pendingChange && profile.pendingChange.auditStatus === 'pending'}}" class="tag tag-orange">资质修改审核中</text>
+      <text wx:if="{{profile.pendingChange && profile.pendingChange.auditStatus === 'rejected'}}" class="tag tag-red">资质修改被驳回</text>
     </view>
     <button class="cert-btn" bindtap="goCert">修改教学资质（提交后需审核）</button>
   </view>

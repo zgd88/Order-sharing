@@ -46,7 +46,9 @@ router.get('/stats', (req, res) => {
 router.get('/teachers', (req, res) => {
   const { status } = req.query;
   let sql = `
-    SELECT tp.*, u.nickname, u.avatar_url, u.phone, u.openid
+    SELECT tp.*, u.nickname, u.avatar_url, u.phone, u.openid,
+           (SELECT COUNT(*) FROM teacher_profile_changes c
+            WHERE c.user_id = tp.user_id AND c.audit_status = 'pending') AS pending_change_count
     FROM teacher_profiles tp JOIN users u ON u.id = tp.user_id`;
   const args = [];
   if (status && ['pending', 'approved', 'rejected'].includes(status)) {
@@ -66,6 +68,7 @@ router.get('/teachers', (req, res) => {
       auditStatus: p.audit_status, rejectReason: p.reject_reason,
       auditedAt: p.audited_at, updatedAt: p.updated_at,
       nickname: p.nickname, avatarUrl: p.avatar_url, phone: p.phone,
+      pendingChangeCount: p.pending_change_count,
     })),
   });
 });
@@ -79,6 +82,9 @@ router.get('/teachers/:id', (req, res) => {
     .get(req.params.id);
   if (!p) return res.status(404).json({ code: 404, message: '认证记录不存在' });
   const resume = db.prepare('SELECT * FROM teacher_resumes WHERE user_id = ?').get(p.user_id);
+  const change = db
+    .prepare("SELECT * FROM teacher_profile_changes WHERE user_id = ? AND audit_status = 'pending' ORDER BY id DESC LIMIT 1")
+    .get(p.user_id);
   res.json({
     code: 0,
     data: {
@@ -91,6 +97,22 @@ router.get('/teachers/:id', (req, res) => {
       auditStatus: p.audit_status, rejectReason: p.reject_reason,
       auditedAt: p.audited_at, updatedAt: p.updated_at,
       nickname: p.nickname, avatarUrl: p.avatar_url, phone: p.phone,
+      pendingChange: change ? {
+        id: change.id,
+        realName: change.real_name,
+        certType: change.cert_type,
+        certImageUrl: change.cert_image_url,
+        degreeImageUrl: change.degree_image_url,
+        otherCertImageUrl: change.other_cert_image_url,
+        subject: change.subject,
+        education: change.education,
+        major: change.major,
+        graduateSchool: change.graduate_school,
+        teachableGrades: change.teachable_grades,
+        intro: change.intro,
+        yearsExperience: change.years_experience,
+        createdAt: change.created_at,
+      } : null,
       resume: resume ? {
         name: resume.name,
         gender: resume.gender,
@@ -105,6 +127,27 @@ router.get('/teachers/:id', (req, res) => {
       } : null,
     },
   });
+});
+
+// 审核资质变更单：通过→新资料写入档案（保持已认证）；驳回→仅作废变更单，原资质继续生效
+router.post('/teachers/:id/change-audit', (req, res) => {
+  const { changeId, action, reason } = req.body || {};
+  if (!changeId || !['approve', 'reject'].includes(action)) {
+    return res.status(400).json({ code: 400, message: '参数不正确' });
+  }
+  if (action === 'reject' && !reason) {
+    return res.status(400).json({ code: 400, message: '请填写驳回原因' });
+  }
+  try {
+    const { auditChange } = require('../services/profile');
+    auditChange(Number(changeId), action, reason, req.admin.id);
+    res.json({
+      code: 0,
+      message: action === 'approve' ? '修改已通过，新资料已生效' : '已驳回修改，该老师原资质继续有效',
+    });
+  } catch (e) {
+    res.status(e.statusCode || 400).json({ code: e.statusCode || 400, message: e.message });
+  }
 });
 
 router.post('/teachers/:id/audit', (req, res) => {

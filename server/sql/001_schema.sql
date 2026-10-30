@@ -174,6 +174,31 @@ CREATE TABLE IF NOT EXISTS demand_applications (
   UNIQUE (order_id, teacher_id)                    -- 一个老师对一个订单只能投递一次
 );
 
+-- 已认证老师的资质变更单：修改资质需重新审核，审核通过前原资质继续生效
+CREATE TABLE IF NOT EXISTS teacher_profile_changes (
+  id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id               INTEGER NOT NULL REFERENCES users(id),
+  real_name             TEXT,
+  cert_type             TEXT,
+  cert_image_url        TEXT,
+  degree_image_url      TEXT,
+  other_cert_image_url  TEXT,
+  subject               TEXT,
+  education             TEXT,
+  major                 TEXT,
+  graduate_school       TEXT,
+  teachable_grades      TEXT,
+  intro                 TEXT,
+  years_experience      INTEGER NOT NULL DEFAULT 0,
+  audit_status          TEXT NOT NULL DEFAULT 'pending'
+                        CHECK (audit_status IN ('pending','approved','rejected')),
+  reject_reason         TEXT,
+  audited_by            INTEGER REFERENCES admins(id),
+  audited_at            INTEGER,
+  created_at            INTEGER NOT NULL,
+  updated_at            INTEGER NOT NULL
+);
+
 -- 老师简历（可自由修改，无需审核；文本字段保存时过滤联系方式）
 CREATE TABLE IF NOT EXISTS teacher_resumes (
   id               INTEGER PRIMARY KEY AUTOINCREMENT,

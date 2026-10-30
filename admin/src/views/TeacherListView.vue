@@ -32,9 +32,12 @@
             <img v-if="row.certImageUrl" :src="imgUrl(row.certImageUrl)" class="img-cell" @click="preview(row.certImageUrl)" />
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="90">
+        <el-table-column label="状态" width="130">
           <template #default="{ row }">
             <StatusTag :status="row.auditStatus" />
+            <el-tag v-if="row.pendingChangeCount > 0" type="warning" size="small" effect="plain" style="margin-left: 4px">
+              资质修改待审
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="提交时间" width="160">

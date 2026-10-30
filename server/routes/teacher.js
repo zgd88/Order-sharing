@@ -6,12 +6,26 @@ const { filterContactInfo } = require('../services/resume');
 
 const router = express.Router();
 
-// 当前认证状态（含驳回原因）
+// 当前认证状态（含驳回原因；已通过老师附资质变更单状态）
 router.get('/profile', authUser, (req, res) => {
   const p = db
     .prepare('SELECT tp.*, u.phone FROM teacher_profiles tp JOIN users u ON u.id = tp.user_id WHERE tp.user_id = ?')
     .get(req.user.id);
-  res.json({ code: 0, data: p ? sanitizeProfile(p) : null });
+  if (!p) return res.json({ code: 0, data: null });
+  const data = sanitizeProfile(p);
+  if (p.audit_status === 'approved') {
+    const { getLatestChange } = require('../services/profile');
+    const c = getLatestChange(req.user.id);
+    if (c && c.audit_status !== 'approved') {
+      data.pendingChange = {
+        id: c.id,
+        auditStatus: c.audit_status, // pending / rejected
+        rejectReason: c.reject_reason,
+        updatedAt: c.updated_at,
+      };
+    }
+  }
+  res.json({ code: 0, data });
 });
 
 // 提交/重新提交认证资料（multipart: 表单字段 + 图片走 /api/upload 后传 URL，兼容直接传 URL）
@@ -31,35 +45,30 @@ router.post('/profile', authUser, (req, res) => {
     return res.status(400).json({ code: 400, message: '请填写正确的手机号' });
   }
   const now = Date.now();
-  const existing = db.prepare('SELECT * FROM teacher_profiles WHERE user_id = ?').get(req.user.id);
-  if (existing) {
-    db.prepare(
-      `UPDATE teacher_profiles SET real_name = ?, id_card_no = ?, cert_type = ?, cert_image_url = ?,
-         degree_image_url = ?, other_cert_image_url = ?, subject = ?, education = ?, major = ?, graduate_school = ?, teachable_grades = ?,
-         intro = ?, years_experience = ?, audit_status = 'pending',
-         reject_reason = NULL, audited_by = NULL, audited_at = NULL, updated_at = ?
-       WHERE user_id = ?`
-    ).run(realName, idCardNo || '', certType, certImageUrl || '', degreeImageUrl || null,
-      otherCertImageUrl || null,
-      subjectStr, education || null, major || null, graduateSchool || null, gradesStr || null,
-      intro || null, Number(yearsExperience) || 0, now, req.user.id);
-  } else {
-    db.prepare(
-      `INSERT INTO teacher_profiles
-       (user_id, real_name, id_card_no, cert_type, cert_image_url, degree_image_url, other_cert_image_url,
-        subject, education, major, graduate_school, teachable_grades, intro, years_experience, audit_status,
-        created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)`
-    ).run(req.user.id, realName, idCardNo || '', certType, certImageUrl || '', degreeImageUrl || null,
-      otherCertImageUrl || null,
-      subjectStr, education || null, major || null, graduateSchool || null, gradesStr || null,
-      intro || null, Number(yearsExperience) || 0, now, now);
-  }
+  const { submitProfile } = require('../services/profile');
+  const result = submitProfile(req.user.id, {
+    realName,
+    certType,
+    certImageUrl: certImageUrl || '',
+    degreeImageUrl: degreeImageUrl || null,
+    otherCertImageUrl: otherCertImageUrl || null,
+    subject: subjectStr,
+    education: education || null,
+    major: major || null,
+    graduateSchool: graduateSchool || null,
+    grades: gradesStr || null,
+    intro: intro || null,
+    years: Number(yearsExperience) || 0,
+  });
   if (phone) {
     db.prepare('UPDATE users SET phone = ?, updated_at = ? WHERE id = ?').run(String(phone), now, req.user.id);
   }
   const p = db.prepare('SELECT * FROM teacher_profiles WHERE user_id = ?').get(req.user.id);
-  res.json({ code: 0, data: sanitizeProfile(p), message: '已提交，等待平台审核' });
+  res.json({
+    code: 0,
+    data: sanitizeProfile(p),
+    message: result.mode === 'change' ? '已提交资质修改，审核通过后生效，期间原资质继续有效' : '已提交，等待平台审核',
+  });
 });
 
 // 我的课程（老师）

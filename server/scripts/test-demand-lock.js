@@ -145,6 +145,56 @@ assertEq(filterContactInfo('正常的简介，没有联系方式'), '正常的�
 assertEq(filterContactInfo('课时费100-200元/小时'), '课时费100-200元/小时', '价格区间不被误杀');
 assertEq(filterContactInfo(''), '', '空文本安全');
 
+console.log('== 9. 已认证老师资质变更单：驳回不失效、通过才更新 ==');
+const { submitProfile, getPendingChange, auditChange } = require('../services/profile');
+// 老师101 认证通过
+const now2 = Date.now();
+db.prepare(
+  `INSERT INTO teacher_profiles (user_id, real_name, cert_type, cert_image_url, subject, education, major,
+     graduate_school, teachable_grades, intro, years_experience, audit_status, audited_at, created_at, updated_at)
+   VALUES (101, '王明', 'teacher_certificate', '/uploads/old.jpg', '数学', '本科', '数学', '贵州大学',
+     '初二,初三', '老简介', 8, 'approved', ?, ?, ?)`
+).run(now2, now2, now2);
+const baseData = {
+  realName: '王明', certType: 'teacher_certificate', certImageUrl: '/uploads/new.jpg',
+  degreeImageUrl: null, otherCertImageUrl: '/uploads/other.jpg', subject: '数学,物理',
+  education: '硕士', major: '应用数学', graduateSchool: '浙江大学', grades: '初二,初三,高一',
+  intro: '新简介', years: 9,
+};
+assertEq(submitProfile(101, baseData).mode, 'change', '已通过老师提交 → 生成变更单模式');
+const p1 = db.prepare('SELECT * FROM teacher_profiles WHERE user_id = 101').get();
+assertEq(p1.audit_status, 'approved', '提交修改后原资质仍为 approved');
+assertEq(p1.education, '本科', '原资料未被改动');
+const change = getPendingChange(101);
+assert(!!change, '存在待审变更单');
+assertEq(change.education, '硕士', '变更单保存新资料');
+
+// 驳回修改 → 原资质继续有效
+auditChange(change.id, 'reject', '证件不清晰', 1);
+const p2 = db.prepare('SELECT * FROM teacher_profiles WHERE user_id = 101').get();
+assertEq(p2.audit_status, 'approved', '驳回后仍为 approved');
+assertEq(p2.education, '本科', '驳回后资料未变');
+const rejectedChange = db.prepare('SELECT * FROM teacher_profile_changes WHERE id = ?').get(change.id);
+assertEq(rejectedChange.audit_status, 'rejected', '变更单置 rejected');
+assertEq(rejectedChange.reject_reason, '证件不清晰', '记录驳回原因');
+
+// 重新提交 → 通过 → 新资料生效且保持 approved
+assertEq(submitProfile(101, baseData).mode, 'change', '再次提交生成新变更单');
+const change2 = getPendingChange(101);
+auditChange(change2.id, 'approve', '', 1);
+const p3 = db.prepare('SELECT * FROM teacher_profiles WHERE user_id = 101').get();
+assertEq(p3.audit_status, 'approved', '通过修改后保持 approved');
+assertEq(p3.education, '硕士', '新学历生效');
+assertEq(p3.cert_image_url, '/uploads/new.jpg', '新证书生效');
+assertEq(p3.subject, '数学,物理', '新科目生效');
+
+// 首轮审核（无资料/被驳回）仍走直接模式
+insertUser(201, 'teacher');
+assertEq(submitProfile(201, baseData).mode, 'direct', '无资料老师 → 直接模式');
+const p4 = db.prepare('SELECT * FROM teacher_profiles WHERE user_id = 201').get();
+assertEq(p4.audit_status, 'pending', '首轮提交进入待审核');
+assertEq(submitProfile(201, baseData).mode, 'direct', '待审核状态再次提交 → 直接模式（原地更新）');
+
 console.log(`\n===== 测试结果: ${passed} 通过, ${failed} 失败 =====`);
 db.close();
 try { fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }); } catch (e) { /* ignore */ }

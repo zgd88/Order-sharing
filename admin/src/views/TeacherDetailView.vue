@@ -54,6 +54,38 @@
         </div>
       </div>
 
+      <!-- 资质变更单（已认证老师修改资质后待审） -->
+      <div class="img-section" v-if="t.pendingChange">
+        <div class="img-title">
+          ⚠️ 资质修改待审（新资料，审核通过后生效；驳回不影响原资质）
+          <el-button type="success" size="small" style="margin-left: 12px" @click="changeAudit('approve')">通过修改</el-button>
+          <el-button type="danger" size="small" @click="changeAudit('reject')">驳回修改</el-button>
+        </div>
+        <el-descriptions :column="2" border>
+          <el-descriptions-item label="新学历">{{ t.pendingChange.education || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="新专业">{{ t.pendingChange.major || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="新毕业院校">{{ t.pendingChange.graduateSchool || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="新授课科目">{{ t.pendingChange.subject || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="新可授年级">{{ t.pendingChange.teachableGrades || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="提交时间">{{ formatTime(t.pendingChange.createdAt) }}</el-descriptions-item>
+          <el-descriptions-item label="新个人简介" :span="2">{{ t.pendingChange.intro || '-' }}</el-descriptions-item>
+        </el-descriptions>
+        <div class="img-list" style="margin-top: 12px">
+          <div class="img-item" v-if="t.pendingChange.certImageUrl">
+            <el-image :src="imgUrl(t.pendingChange.certImageUrl)" :preview-src-list="[imgUrl(t.pendingChange.certImageUrl)]" fit="contain" class="cert-img small" />
+            <div class="img-label">新教师资格证</div>
+          </div>
+          <div class="img-item" v-if="t.pendingChange.degreeImageUrl">
+            <el-image :src="imgUrl(t.pendingChange.degreeImageUrl)" :preview-src-list="[imgUrl(t.pendingChange.degreeImageUrl)]" fit="contain" class="cert-img small" />
+            <div class="img-label">新学历证</div>
+          </div>
+          <div class="img-item" v-if="t.pendingChange.otherCertImageUrl">
+            <el-image :src="imgUrl(t.pendingChange.otherCertImageUrl)" :preview-src-list="[imgUrl(t.pendingChange.otherCertImageUrl)]" fit="contain" class="cert-img small" />
+            <div class="img-label">新其他证书</div>
+          </div>
+        </div>
+      </div>
+
       <!-- 老师简历 -->
       <div class="img-section" v-if="t.resume">
         <div class="img-title">老师简历</div>
@@ -133,6 +165,37 @@ async function audit(action) {
   load();
 }
 
+// 审核资质变更单：驳回不影响原已通过资质
+async function changeAudit(action) {
+  let reason = '';
+  if (action === 'reject') {
+    try {
+      const r = await ElMessageBox.prompt('请填写驳回原因（原资质将继续有效）', '驳回修改', {
+        confirmButtonText: '确认驳回',
+        cancelButtonText: '取消',
+        inputPattern: /\S+/,
+        inputErrorMessage: '驳回原因不能为空',
+      });
+      reason = r.value;
+    } catch (e) {
+      return;
+    }
+  } else {
+    try {
+      await ElMessageBox.confirm(
+        `确认通过「${t.value.realName}」的资质修改？新资料将替换现有资质并保持已认证状态。`,
+        '通过修改',
+        { confirmButtonText: '确认通过', cancelButtonText: '取消', type: 'success' }
+      );
+    } catch (e) {
+      return;
+    }
+  }
+  await teacherApi.changeAudit(t.value.id, t.value.pendingChange.id, action, reason);
+  ElMessage.success(action === 'approve' ? '修改已通过，新资料已生效' : '已驳回修改，原资质继续有效');
+  load();
+}
+
 onMounted(load);
 </script>
 
@@ -169,6 +232,11 @@ onMounted(load);
   border: 1px solid #eee;
   border-radius: 6px;
   background: #fafafa;
+}
+
+.cert-img.small {
+  width: 200px;
+  height: 140px;
 }
 
 .cert-img.empty {

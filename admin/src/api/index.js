@@ -12,6 +12,8 @@ export const teacherApi = {
   list: (status) => http.get('/admin/teachers', { params: status ? { status } : {} }),
   detail: (id) => http.get(`/admin/teachers/${id}`),
   audit: (id, action, reason) => http.post(`/admin/teachers/${id}/audit`, { action, reason }),
+  changeAudit: (id, changeId, action, reason) =>
+    http.post(`/admin/teachers/${id}/change-audit`, { changeId, action, reason }),
 };
 
 export const courseApi = {

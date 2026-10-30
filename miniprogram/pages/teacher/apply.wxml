@@ -3,9 +3,17 @@
   <view wx:if="{{profile && profile.auditStatus === 'pending'}}" class="status-card pending">
     ⏳ 认证审核中：修改后重新提交将重新排队审核
   </view>
-  <view wx:elif="{{profile && profile.auditStatus === 'approved'}}" class="status-card approved">
-    ✅ 认证已通过。修改下方资料并重新提交后需平台重新审核，审核通过前将暂停发布课程与投递
-  </view>
+  <block wx:elif="{{profile && profile.auditStatus === 'approved'}}">
+    <view wx:if="{{profile.pendingChange && profile.pendingChange.auditStatus === 'pending'}}" class="status-card pending">
+      ⏳ 资质修改审核中：新资料通过后生效，当前仍使用原已通过资质
+    </view>
+    <view wx:elif="{{profile.pendingChange && profile.pendingChange.auditStatus === 'rejected'}}" class="status-card rejected">
+      ❌ 资质修改被驳回：{{profile.pendingChange.rejectReason}}。原资质继续有效，请修改后重新提交
+    </view>
+    <view wx:else class="status-card approved">
+      ✅ 认证已通过。修改下方资料并重新提交后需平台重新审核，审核通过前原资质继续有效
+    </view>
+  </block>
   <view wx:elif="{{profile && profile.auditStatus === 'rejected'}}" class="status-card rejected">
     ❌ 认证被驳回：{{profile.rejectReason}}，请修改后重新提交
   </view>
