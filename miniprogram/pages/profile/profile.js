@@ -64,6 +64,9 @@ Page({
   goEarnings() {
     wx.navigateTo({ url: '/pages/teacher/earnings' });
   },
+  goResume() {
+    wx.navigateTo({ url: '/pages/teacher/resume' });
+  },
   logout() {
     wx.showModal({
       title: '退出登录',

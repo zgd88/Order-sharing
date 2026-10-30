@@ -78,15 +78,31 @@ router.get('/teachers/:id', (req, res) => {
     )
     .get(req.params.id);
   if (!p) return res.status(404).json({ code: 404, message: '认证记录不存在' });
+  const resume = db.prepare('SELECT * FROM teacher_resumes WHERE user_id = ?').get(p.user_id);
   res.json({
     code: 0,
     data: {
       id: p.id, userId: p.user_id, realName: p.real_name, idCardNo: p.id_card_no,
       certType: p.cert_type, certImageUrl: p.cert_image_url, degreeImageUrl: p.degree_image_url,
-      subject: p.subject, intro: p.intro, yearsExperience: p.years_experience,
+      otherCertImageUrl: p.other_cert_image_url,
+      subject: p.subject, education: p.education, major: p.major,
+      graduateSchool: p.graduate_school, teachableGrades: p.teachable_grades, intro: p.intro,
+      yearsExperience: p.years_experience,
       auditStatus: p.audit_status, rejectReason: p.reject_reason,
       auditedAt: p.audited_at, updatedAt: p.updated_at,
       nickname: p.nickname, avatarUrl: p.avatar_url, phone: p.phone,
+      resume: resume ? {
+        name: resume.name,
+        gender: resume.gender,
+        address: resume.address,
+        subjects: resume.subjects,
+        grades: resume.grades,
+        contact: resume.contact,
+        yearsExperience: resume.years_experience,
+        identityTag: resume.identity_tag,
+        intro: resume.intro,
+        updatedAt: resume.updated_at,
+      } : null,
     },
   });
 });

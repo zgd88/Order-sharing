@@ -20,6 +20,7 @@ Page({
       yearsExperience: '',
       certImageUrl: '',
       degreeImageUrl: '',
+      otherCertImageUrl: '',
     },
     certTypes: [
       { value: 'teacher_certificate', label: '教师资格证' },
@@ -59,6 +60,7 @@ Page({
             yearsExperience: p.yearsExperience ? String(p.yearsExperience) : '',
             certImageUrl: api.fullUrl(p.certImageUrl),
             degreeImageUrl: api.fullUrl(p.degreeImageUrl),
+            otherCertImageUrl: api.fullUrl(p.otherCertImageUrl),
           },
           certTypeIndex: this.data.certTypes.findIndex((t) => t.value === (p.certType || 'teacher_certificate')),
           educationIndex: eduIdx >= 0 ? eduIdx : 1,

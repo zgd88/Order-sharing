@@ -69,11 +69,15 @@
       <view class="upload-row">
         <view class="upload-box" data-key="certImageUrl" bindtap="chooseImage">
           <image wx:if="{{form.certImageUrl}}" class="upload-img" src="{{form.certImageUrl}}" mode="aspectFill" />
-          <view wx:else class="upload-plus">＋<view class="upload-text">证件(选填)</view></view>
+          <view wx:else class="upload-plus">＋<view class="upload-text">教师资格证(选填)</view></view>
         </view>
         <view class="upload-box" data-key="degreeImageUrl" bindtap="chooseImage">
           <image wx:if="{{form.degreeImageUrl}}" class="upload-img" src="{{form.degreeImageUrl}}" mode="aspectFill" />
           <view wx:else class="upload-plus">＋<view class="upload-text">学历证(选填)</view></view>
+        </view>
+        <view class="upload-box" data-key="otherCertImageUrl" bindtap="chooseImage">
+          <image wx:if="{{form.otherCertImageUrl}}" class="upload-img" src="{{form.otherCertImageUrl}}" mode="aspectFill" />
+          <view wx:else class="upload-plus">＋<view class="upload-text">其他证书(选填)</view></view>
         </view>
       </view>
     </view>

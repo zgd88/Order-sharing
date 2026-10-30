@@ -93,6 +93,27 @@
   margin-top: 8rpx;
 }
 
+.resume-tags {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #666;
+  background: #f8f9fb;
+  border-radius: 8rpx;
+  padding: 16rpx;
+  line-height: 1.7;
+}
+
+.resume-tag-row {
+  display: flex;
+  gap: 12rpx;
+}
+
+.r-label {
+  color: #999;
+  flex-shrink: 0;
+  width: 110rpx;
+}
+
 .resume-intro {
   margin-top: 16rpx;
   font-size: 24rpx;

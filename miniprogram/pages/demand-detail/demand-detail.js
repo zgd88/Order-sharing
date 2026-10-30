@@ -25,14 +25,29 @@ Page({
         closed: { text: '已关闭', cls: 'tag-gray' },
       };
       const st = statusMap[o.status] || { text: o.status, cls: 'tag-gray' };
+      // 简历字段预处理（老师未写简历时回退到认证资料）
+      const applications = (o.applications || []).map((a) => {
+        const r = a.resume || {};
+        return {
+          ...a,
+          showName: r.name || a.realName || a.nickname,
+          showYears: r.yearsExperience != null ? r.yearsExperience : a.yearsExperience,
+          showGender: r.gender || '',
+          showTag: r.identityTag || '',
+          showAddress: r.address || '',
+          showSubjects: r.subjects || a.teacherSubject || '',
+          showGrades: r.grades || '',
+          showIntro: r.intro || a.teacherIntro || '',
+        };
+      });
       this.setData({
         order: o,
-        applications: o.applications || [],
+        applications,
         loading: false,
         statusText: st.text,
         statusTagClass: st.cls,
         rateText: util.fen2yuan(o.hourlyRateCents),
-        lockedTeacher: (o.applications || []).find((a) => a.id === o.selectedApplicationId) || null,
+        lockedTeacher: applications.find((a) => a.id === o.selectedApplicationId) || null,
       });
     } catch (e) {
       this.setData({ loading: false });

@@ -18,9 +18,9 @@ if (!courseCols.includes('province')) {
   console.log('[db] 已迁移：courses 表新增 province 列');
 }
 
-// 轻量迁移：teacher_profiles 增加 education/major/graduate_school/teachable_grades 列
+// 轻量迁移：teacher_profiles 增加 education/major/graduate_school/teachable_grades/other_cert_image_url 列
 const profileCols = db.prepare('PRAGMA table_info(teacher_profiles)').all().map((c) => c.name);
-for (const [col, def] of [['education', 'TEXT'], ['major', 'TEXT'], ['graduate_school', 'TEXT'], ['teachable_grades', 'TEXT']]) {
+for (const [col, def] of [['education', 'TEXT'], ['major', 'TEXT'], ['graduate_school', 'TEXT'], ['teachable_grades', 'TEXT'], ['other_cert_image_url', 'TEXT']]) {
   if (!profileCols.includes(col)) {
     db.exec(`ALTER TABLE teacher_profiles ADD COLUMN ${col} ${def}`);
     console.log(`[db] 已迁移：teacher_profiles 表新增 ${col} 列`);

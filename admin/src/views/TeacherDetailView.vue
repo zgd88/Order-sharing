@@ -47,7 +47,29 @@
             <el-image :src="imgUrl(t.degreeImageUrl)" :preview-src-list="[imgUrl(t.degreeImageUrl)]" fit="contain" class="cert-img" />
             <div class="img-label">学历证书</div>
           </div>
+          <div class="img-item" v-if="t.otherCertImageUrl">
+            <el-image :src="imgUrl(t.otherCertImageUrl)" :preview-src-list="[imgUrl(t.otherCertImageUrl)]" fit="contain" class="cert-img" />
+            <div class="img-label">其他证书</div>
+          </div>
         </div>
+      </div>
+
+      <!-- 老师简历 -->
+      <div class="img-section" v-if="t.resume">
+        <div class="img-title">老师简历</div>
+        <el-descriptions :column="2" border>
+          <el-descriptions-item label="姓名">{{ t.resume.name || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="性别">{{ t.resume.gender || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="身份标签">{{ t.resume.identityTag || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="教龄">{{ t.resume.yearsExperience }} 年</el-descriptions-item>
+          <el-descriptions-item label="联系方式">
+            <span class="phone">{{ t.resume.contact || '-' }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="常驻地址">{{ t.resume.address || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="授课科目">{{ t.resume.subjects || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="可教年级">{{ t.resume.grades || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="个人简介" :span="2">{{ t.resume.intro || '-' }}</el-descriptions-item>
+        </el-descriptions>
       </div>
     </div>
   </div>

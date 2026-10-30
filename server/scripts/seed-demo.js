@@ -48,6 +48,28 @@ mkProfile(t1, { realName: '王明', idCardNo: '330101199001011234', subject: '�
 mkProfile(t2, { realName: '李华', idCardNo: '330101199202025678', subject: '英语', years: 5, status: 'approved', education: '本科', major: '英语教育', graduateSchool: '浙江师范大学', teachableGrades: '小学三年级,小学四年级,小学五年级,小学六年级' });
 mkProfile(t3, { realName: '赵强', idCardNo: '330101198803039012', subject: '物理', years: 10, status: 'pending' });
 
+// 演示老师简历
+const mkResume = (userId, r) => {
+  db.prepare(
+    `INSERT INTO teacher_resumes (user_id, name, gender, address, subjects, grades, contact,
+       years_experience, identity_tag, intro, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).run(userId, r.name, r.gender, r.address, r.subjects, r.grades, r.contact,
+    r.years, r.tag, r.intro, now, now);
+};
+mkResume(t1, {
+  name: '王老师', gender: '男', address: '浙江省杭州市西湖区文三路138号',
+  subjects: '数学,物理', grades: '小学六年级,初一,初二,初三', contact: '13500001111',
+  years: 8, tag: '专职',
+  intro: '浙江大学硕士毕业，8年一线教学经验，擅长基础巩固与竞赛辅导，带过200余名学生，提分显著。',
+});
+mkResume(t2, {
+  name: '李老师', gender: '女', address: '浙江省杭州市拱墅区湖墅南路99号',
+  subjects: '英语', grades: '小学三年级,小学四年级,小学五年级,小学六年级', contact: '微信号 li-teacher',
+  years: 5, tag: '大学生',
+  intro: '英语教育专业，亲和力强，擅长自然拼读与口语启蒙，可上门授课。',
+});
+
 // 家长
 const parents = [];
 ['小明妈妈', '小红爸爸', '小刚妈妈', '小雨爸爸', '小美妈妈', '小宇妈妈', '小浩爸爸', '小琳妈妈'].forEach((n, i) => {

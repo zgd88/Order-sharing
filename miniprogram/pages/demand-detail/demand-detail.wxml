@@ -30,15 +30,22 @@
         <image class="avatar" src="{{app.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
         <view class="resume-info">
           <view class="resume-name">
-            {{app.nickname}}
+            {{app.showName}}
+            <text wx:if="{{app.showGender}}" class="tag tag-blue">{{app.showGender}}</text>
+            <text wx:if="{{app.showTag}}" class="tag tag-orange">{{app.showTag}}</text>
             <text wx:if="{{app.id === order.selectedApplicationId}}" class="tag tag-green">已选择</text>
             <text wx:if="{{app.status === 'invalid'}}" class="tag tag-gray">已失效</text>
           </view>
-          <view class="resume-meta">{{app.yearsExperience}}年教龄 · {{app.education || '学历未填'}}{{app.major ? ' · ' + app.major : ''}} · {{app.teacherSubject}}</view>
+          <view class="resume-meta">{{app.showYears}}年教龄 · {{app.education || '学历未填'}}{{app.major ? ' · ' + app.major : ''}}</view>
         </view>
       </view>
-      <view wx:if="{{app.teacherIntro || app.note}}" class="resume-intro">
-        <view wx:if="{{app.teacherIntro}}">自我介绍：{{app.teacherIntro}}</view>
+      <view wx:if="{{app.showSubjects || app.showGrades || app.showAddress}}" class="resume-tags">
+        <view wx:if="{{app.showSubjects}}" class="resume-tag-row"><text class="r-label">授课科目</text>{{app.showSubjects}}</view>
+        <view wx:if="{{app.showGrades}}" class="resume-tag-row"><text class="r-label">可教年级</text>{{app.showGrades}}</view>
+        <view wx:if="{{app.showAddress}}" class="resume-tag-row"><text class="r-label">常驻地址</text>{{app.showAddress}}</view>
+      </view>
+      <view wx:if="{{app.showIntro || app.note}}" class="resume-intro">
+        <view wx:if="{{app.showIntro}}">自我介绍：{{app.showIntro}}</view>
         <view wx:if="{{app.note}}">授课经历：{{app.note}}</view>
       </view>
       <button

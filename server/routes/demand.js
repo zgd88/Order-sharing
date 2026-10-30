@@ -56,10 +56,14 @@ router.get('/:id', (req, res) => {
     .prepare(
       `SELECT a.*, u.nickname, u.avatar_url, u.phone AS teacher_phone,
               p.real_name, p.education, p.major, p.subject AS teacher_subject,
-              p.years_experience, p.intro AS teacher_intro
+              p.years_experience, p.intro AS teacher_intro,
+              r.name AS resume_name, r.gender, r.address AS resume_address,
+              r.subjects AS resume_subjects, r.grades AS resume_grades,
+              r.years_experience AS resume_years, r.identity_tag, r.intro AS resume_intro
        FROM demand_applications a
        JOIN users u ON u.id = a.teacher_id
        LEFT JOIN teacher_profiles p ON p.user_id = a.teacher_id
+       LEFT JOIN teacher_resumes r ON r.user_id = a.teacher_id
        WHERE a.order_id = ? ORDER BY a.created_at ASC`
     )
     .all(o.id);
@@ -79,6 +83,17 @@ router.get('/:id', (req, res) => {
       note: a.note,
       status: a.status,
       createdAt: a.created_at,
+      // 老师简历（隐私：不含联系方式）
+      resume: {
+        name: a.resume_name,
+        gender: a.gender,
+        address: a.resume_address,
+        subjects: a.resume_subjects,
+        grades: a.resume_grades,
+        yearsExperience: a.resume_years,
+        identityTag: a.identity_tag,
+        intro: a.resume_intro,
+      },
     })),
   };
   if (!isOwner) {

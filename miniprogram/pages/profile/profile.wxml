@@ -27,6 +27,10 @@
     <view wx:else class="cell">
       <text>📝 资质认证 <text class="cell-badge approved">已通过</text></text>
     </view>
+    <view class="cell" bindtap="goResume">
+      <text>📄 我的简历</text>
+      <view class="arrow"></view>
+    </view>
     <view class="cell" bindtap="goEarnings">
       <text>💰 收益明细</text>
       <view class="arrow"></view>

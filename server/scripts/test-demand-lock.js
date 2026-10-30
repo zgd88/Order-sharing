@@ -130,6 +130,21 @@ selectTeacher(5, 40, 1);
 const closeLocked = (() => { try { closeOrder(5, 1); return null; } catch (e) { return e; } })();
 assert(closeLocked && closeLocked.statusCode === 400, '已锁定订单不可关闭');
 
+console.log('== 8. 简历联系方式正则过滤 ==');
+const { filterContactInfo } = require('../services/resume');
+assertEq(filterContactInfo('联系我 13812345678 谢谢'), '联系我 [联系方式已过滤] 谢谢', '手机号被过滤');
+assertEq(filterContactInfo('打 138 1234 5678 这个'), '打 [联系方式已过滤] 这个', '带空格手机号被过滤');
+assertEq(filterContactInfo('座机 0851-1234567 可联系'), '座机 [联系方式已过滤] 可联系', '座机被过滤');
+assertEq(filterContactInfo('加微信：abc_12345 详聊'), '加[联系方式已过滤] 详聊', '微信号被过滤');
+assertEq(filterContactInfo('我的微信是 wx_abc12345，欢迎联系'), '我的[联系方式已过滤]，欢迎联系', '"微信是xxx"写法被过滤');
+assertEq(filterContactInfo('微信号 abcdefgh 可加'), '[联系方式已过滤] 可加', '"微信号xxx"写法被过滤');
+assertEq(filterContactInfo('加VX:xyz123456聊'), '加[联系方式已过滤]聊', 'VX+号被过滤');
+assertEq(filterContactInfo('QQ 12345678 在线'), '[联系方式已过滤] 在线', 'QQ号被过滤');
+assertEq(filterContactInfo('邮箱 test@qq.com 联系'), '邮箱 [联系方式已过滤] 联系', '邮箱被过滤');
+assertEq(filterContactInfo('正常的简介，没有联系方式'), '正常的简介，没有联系方式', '无联系方式原样保留');
+assertEq(filterContactInfo('课时费100-200元/小时'), '课时费100-200元/小时', '价格区间不被误杀');
+assertEq(filterContactInfo(''), '', '空文本安全');
+
 console.log(`\n===== 测试结果: ${passed} 通过, ${failed} 失败 =====`);
 db.close();
 try { fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }); } catch (e) { /* ignore */ }

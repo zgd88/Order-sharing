@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS teacher_profiles (
                    CHECK (cert_type IN ('teacher_certificate','degree')),
   cert_image_url   TEXT,                       -- 选填
   degree_image_url TEXT,
+  other_cert_image_url TEXT,                   -- 其他证书（选填）
   subject          TEXT NOT NULL,              -- 授课科目（多选，逗号分隔）
   education        TEXT,                       -- 学历：大专/本科/硕士/博士/其他
   major            TEXT,                       -- 专业
@@ -171,6 +172,23 @@ CREATE TABLE IF NOT EXISTS demand_applications (
   created_at     INTEGER NOT NULL,
   updated_at     INTEGER NOT NULL,
   UNIQUE (order_id, teacher_id)                    -- 一个老师对一个订单只能投递一次
+);
+
+-- 老师简历（可自由修改，无需审核；文本字段保存时过滤联系方式）
+CREATE TABLE IF NOT EXISTS teacher_resumes (
+  id               INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id          INTEGER NOT NULL UNIQUE REFERENCES users(id),
+  name             TEXT NOT NULL DEFAULT '',
+  gender           TEXT NOT NULL DEFAULT '' CHECK (gender IN ('', '男', '女')),
+  address          TEXT NOT NULL DEFAULT '',
+  subjects         TEXT NOT NULL DEFAULT '',
+  grades           TEXT NOT NULL DEFAULT '',
+  contact          TEXT NOT NULL DEFAULT '',
+  years_experience INTEGER NOT NULL DEFAULT 0,
+  identity_tag     TEXT NOT NULL DEFAULT '' CHECK (identity_tag IN ('', '专职', '大学生')),
+  intro            TEXT NOT NULL DEFAULT '',
+  created_at       INTEGER NOT NULL,
+  updated_at       INTEGER NOT NULL
 );
 
 -- 站内信

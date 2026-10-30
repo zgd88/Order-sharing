@@ -12,6 +12,7 @@
     "pages/location-picker/location-picker",
     "pages/notifications/notifications",
     "pages/teacher/apply",
+    "pages/teacher/resume",
     "pages/teacher/course-form",
     "pages/teacher/my-courses",
     "pages/teacher/course-members",

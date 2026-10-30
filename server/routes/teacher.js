@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../db');
 const { authUser, authTeacher } = require('../middleware/auth');
 const { cancelCourse } = require('../services/tier-engine');
+const { filterContactInfo } = require('../services/resume');
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.get('/profile', authUser, (req, res) => {
 
 // 提交/重新提交认证资料（multipart: 表单字段 + 图片走 /api/upload 后传 URL，兼容直接传 URL）
 router.post('/profile', authUser, (req, res) => {
-  const { realName, idCardNo, certType, certImageUrl, degreeImageUrl, subject, education, major, graduateSchool, teachableGrades, intro, yearsExperience, phone } = req.body || {};
+  const { realName, idCardNo, certType, certImageUrl, degreeImageUrl, otherCertImageUrl, subject, education, major, graduateSchool, teachableGrades, intro, yearsExperience, phone } = req.body || {};
   if (!realName || !certType) {
     return res.status(400).json({ code: 400, message: '请填写姓名并选择证件类型' });
   }
@@ -34,20 +35,23 @@ router.post('/profile', authUser, (req, res) => {
   if (existing) {
     db.prepare(
       `UPDATE teacher_profiles SET real_name = ?, id_card_no = ?, cert_type = ?, cert_image_url = ?,
-         degree_image_url = ?, subject = ?, education = ?, major = ?, graduate_school = ?, teachable_grades = ?,
+         degree_image_url = ?, other_cert_image_url = ?, subject = ?, education = ?, major = ?, graduate_school = ?, teachable_grades = ?,
          intro = ?, years_experience = ?, audit_status = 'pending',
          reject_reason = NULL, audited_by = NULL, audited_at = NULL, updated_at = ?
        WHERE user_id = ?`
     ).run(realName, idCardNo || '', certType, certImageUrl || '', degreeImageUrl || null,
+      otherCertImageUrl || null,
       subjectStr, education || null, major || null, graduateSchool || null, gradesStr || null,
       intro || null, Number(yearsExperience) || 0, now, req.user.id);
   } else {
     db.prepare(
       `INSERT INTO teacher_profiles
-       (user_id, real_name, id_card_no, cert_type, cert_image_url, degree_image_url, subject, education, major,
-        graduate_school, teachable_grades, intro, years_experience, audit_status, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)`
+       (user_id, real_name, id_card_no, cert_type, cert_image_url, degree_image_url, other_cert_image_url,
+        subject, education, major, graduate_school, teachable_grades, intro, years_experience, audit_status,
+        created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)`
     ).run(req.user.id, realName, idCardNo || '', certType, certImageUrl || '', degreeImageUrl || null,
+      otherCertImageUrl || null,
       subjectStr, education || null, major || null, graduateSchool || null, gradesStr || null,
       intro || null, Number(yearsExperience) || 0, now, now);
   }
@@ -144,6 +148,7 @@ function sanitizeProfile(p) {
     certType: p.cert_type,
     certImageUrl: p.cert_image_url,
     degreeImageUrl: p.degree_image_url,
+    otherCertImageUrl: p.other_cert_image_url,
     subject: p.subject,
     education: p.education,
     major: p.major,
@@ -160,6 +165,69 @@ function sanitizeProfile(p) {
 function maskIdCard(no) {
   if (!no || no.length < 8) return no;
   return `${no.slice(0, 4)}********${no.slice(-4)}`;
+}
+
+// ---------------- 老师简历（自由修改，无需审核） ----------------
+
+// 获取自己的简历
+router.get('/resume', authUser, (req, res) => {
+  const r = db.prepare('SELECT * FROM teacher_resumes WHERE user_id = ?').get(req.user.id);
+  res.json({ code: 0, data: r ? sanitizeResume(r) : null });
+});
+
+// 保存/更新简历：文本字段统一过联系方式过滤，资质字段（学历/证书）不在此修改
+router.put('/resume', authUser, (req, res) => {
+  const b = req.body || {};
+  const name = String(b.name || '').trim().slice(0, 30);
+  const gender = ['男', '女'].includes(b.gender) ? b.gender : '';
+  const identityTag = ['专职', '大学生'].includes(b.identityTag) ? b.identityTag : '';
+  const years = Math.max(0, Math.min(100, Number(b.yearsExperience) || 0));
+  const contact = String(b.contact || '').trim().slice(0, 50);
+  const data = {
+    name: filterContactInfo(name),
+    gender,
+    address: filterContactInfo(String(b.address || '').trim().slice(0, 100)),
+    subjects: Array.isArray(b.subjects) ? b.subjects.join(',') : String(b.subjects || '').slice(0, 100),
+    grades: Array.isArray(b.grades) ? b.grades.join(',') : String(b.grades || '').slice(0, 100),
+    contact,
+    years_experience: years,
+    identity_tag: identityTag,
+    intro: filterContactInfo(String(b.intro || '').trim().slice(0, 2000)),
+  };
+  const now = Date.now();
+  const existing = db.prepare('SELECT id FROM teacher_resumes WHERE user_id = ?').get(req.user.id);
+  if (existing) {
+    db.prepare(
+      `UPDATE teacher_resumes SET name = ?, gender = ?, address = ?, subjects = ?, grades = ?, contact = ?,
+         years_experience = ?, identity_tag = ?, intro = ?, updated_at = ? WHERE user_id = ?`
+    ).run(data.name, data.gender, data.address, data.subjects, data.grades, data.contact,
+      data.years_experience, data.identity_tag, data.intro, now, req.user.id);
+  } else {
+    db.prepare(
+      `INSERT INTO teacher_resumes (user_id, name, gender, address, subjects, grades, contact,
+         years_experience, identity_tag, intro, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).run(req.user.id, data.name, data.gender, data.address, data.subjects, data.grades, data.contact,
+      data.years_experience, data.identity_tag, data.intro, now, now);
+  }
+  const r = db.prepare('SELECT * FROM teacher_resumes WHERE user_id = ?').get(req.user.id);
+  res.json({ code: 0, data: sanitizeResume(r), message: '简历已保存' });
+});
+
+function sanitizeResume(r) {
+  return {
+    id: r.id,
+    name: r.name,
+    gender: r.gender,
+    address: r.address,
+    subjects: r.subjects,
+    grades: r.grades,
+    contact: r.contact,
+    yearsExperience: r.years_experience,
+    identityTag: r.identity_tag,
+    intro: r.intro,
+    updatedAt: r.updated_at,
+  };
 }
 
 // ---------------- 家长发单：需求大厅（脱敏） ----------------

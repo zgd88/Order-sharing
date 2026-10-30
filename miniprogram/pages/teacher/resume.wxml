@@ -1,0 +1,110 @@
+<view class="container" wx:if="{{!loading}}">
+  <view class="card">
+    <view class="form-title">基本信息</view>
+    <view class="form-item-row">
+      <view class="form-item half">
+        <view class="form-label">姓名</view>
+        <input class="form-input" placeholder="如：王老师" value="{{form.name}}" data-key="name" bindinput="onField" />
+      </view>
+      <view class="form-item half">
+        <view class="form-label">性别</view>
+        <picker range="{{genders}}" value="{{genderIndex}}" bindchange="onGender">
+          <view class="form-picker {{genderIndex >= 0 ? '' : 'placeholder'}}">{{genderIndex >= 0 ? genders[genderIndex] : '请选择'}} ▾</view>
+        </picker>
+      </view>
+    </view>
+    <view class="form-item-row">
+      <view class="form-item half">
+        <view class="form-label">身份标签</view>
+        <picker range="{{tags}}" value="{{tagIndex}}" bindchange="onTag">
+          <view class="form-picker {{tagIndex >= 0 ? '' : 'placeholder'}}">{{tagIndex >= 0 ? tags[tagIndex] : '请选择'}} ▾</view>
+        </picker>
+      </view>
+      <view class="form-item half">
+        <view class="form-label">教龄（年）</view>
+        <input class="form-input" type="number" placeholder="如：5" value="{{form.yearsExperience}}" data-key="yearsExperience" bindinput="onField" />
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">常驻地址</view>
+      <view class="location-row" bindtap="chooseAddress">
+        <view class="location-text {{form.address ? '' : 'placeholder'}}">{{form.address || '点击选择地图位置'}}</view>
+        <view class="arrow"></view>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">联系方式（电话或微信号）</view>
+      <input class="form-input" placeholder="仅平台客服可见，用于撮合时联系您" value="{{form.contact}}" data-key="contact" bindinput="onField" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="form-title">教学范围</view>
+    <view class="form-item">
+      <view class="form-label">授课科目（多选）</view>
+      <view class="multi-select" data-key="subject" bindtap="openPicker">
+        <text class="{{subjectText ? '' : 'placeholder'}}">{{subjectText || '点击选择科目'}}</text>
+        <view class="arrow"></view>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">可教年级（多选）</view>
+      <view class="multi-select" data-key="grades" bindtap="openPicker">
+        <text class="{{gradesText ? '' : 'placeholder'}}">{{gradesText || '点击选择年级'}}</text>
+        <view class="arrow"></view>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">个人简介</view>
+      <textarea class="form-textarea" maxlength="2000" placeholder="教学特色、授课经历等（请勿在简介中留联系方式，保存时会自动过滤）" value="{{form.intro}}" data-key="intro" bindinput="onField" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="form-title">教学资质 <text class="audit-hint">修改需重新提交审核</text></view>
+    <view class="cert-row">
+      <text class="cert-label">最高学历</text>
+      <text class="cert-value">{{profile ? (profile.education || '未填写') : '未认证'}}</text>
+    </view>
+    <view class="cert-row">
+      <text class="cert-label">教师资格证</text>
+      <text class="cert-value">{{profile && profile.certImageUrl ? '已上传' : '未上传'}}</text>
+    </view>
+    <view class="cert-row">
+      <text class="cert-label">其他证书</text>
+      <text class="cert-value">{{profile && profile.otherCertImageUrl ? '已上传' : '未上传'}}</text>
+    </view>
+    <view class="cert-status" wx:if="{{profile}}">
+      <text class="tag {{profile.auditStatus === 'approved' ? 'tag-green' : profile.auditStatus === 'pending' ? 'tag-orange' : 'tag-red'}}">
+        {{profile.auditStatus === 'approved' ? '已通过' : profile.auditStatus === 'pending' ? '审核中' : '已驳回'}}
+      </text>
+    </view>
+    <button class="cert-btn" bindtap="goCert">修改教学资质（提交后需审核）</button>
+  </view>
+
+  <button class="btn-primary submit-btn" bindtap="save" disabled="{{saving}}">保存简历</button>
+  <view class="form-tip">简历可随时修改，无需审核；教学资质修改后需平台重新审核</view>
+</view>
+
+<!-- 多选弹层 -->
+<view wx:if="{{pickerOpen}}" class="picker-mask" bindtap="closePicker" catchtouchmove="noop">
+  <view class="picker-panel" catchtap="noop">
+    <view class="picker-title">{{pickerOpen === 'subject' ? '选择授课科目' : '选择可教年级'}}<text class="picker-sub">可多选</text></view>
+    <scroll-view scroll-y class="picker-list">
+      <view
+        class="picker-option {{item.checked ? 'checked' : ''}}"
+        wx:for="{{pickerOptions}}"
+        wx:key="name"
+        data-idx="{{index}}"
+        bindtap="toggleOption"
+      >
+        <text>{{item.name}}</text>
+        <view class="checkbox">{{item.checked ? '✓' : ''}}</view>
+      </view>
+    </scroll-view>
+    <view class="picker-footer">
+      <button class="picker-cancel" bindtap="closePicker">取消</button>
+      <button class="picker-confirm" bindtap="confirmPicker">确定</button>
+    </view>
+  </view>
+</view>
