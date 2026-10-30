@@ -18,12 +18,26 @@ if (!courseCols.includes('province')) {
   console.log('[db] 已迁移：courses 表新增 province 列');
 }
 
-// 轻量迁移：teacher_profiles 增加 education/major/graduate_school/teachable_grades/other_cert_image_url 列
+// 轻量迁移：teacher_profiles 增加 education/major/graduate_school/teachable_grades/证书照片列
 const profileCols = db.prepare('PRAGMA table_info(teacher_profiles)').all().map((c) => c.name);
-for (const [col, def] of [['education', 'TEXT'], ['major', 'TEXT'], ['graduate_school', 'TEXT'], ['teachable_grades', 'TEXT'], ['other_cert_image_url', 'TEXT']]) {
+for (const [col, def] of [
+  ['education', 'TEXT'], ['major', 'TEXT'], ['graduate_school', 'TEXT'], ['teachable_grades', 'TEXT'],
+  ['other_cert_image_url', 'TEXT'], ['cert_image_url4', 'TEXT'], ['cert_image_url5', 'TEXT'],
+]) {
   if (!profileCols.includes(col)) {
     db.exec(`ALTER TABLE teacher_profiles ADD COLUMN ${col} ${def}`);
     console.log(`[db] 已迁移：teacher_profiles 表新增 ${col} 列`);
+  }
+}
+
+// 轻量迁移：teacher_profile_changes 增加证书照片4/5列
+if (db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='teacher_profile_changes'").get()) {
+  const changeCols = db.prepare('PRAGMA table_info(teacher_profile_changes)').all().map((c) => c.name);
+  for (const [col, def] of [['cert_image_url4', 'TEXT'], ['cert_image_url5', 'TEXT']]) {
+    if (!changeCols.includes(col)) {
+      db.exec(`ALTER TABLE teacher_profile_changes ADD COLUMN ${col} ${def}`);
+      console.log(`[db] 已迁移：teacher_profile_changes 表新增 ${col} 列`);
+    }
   }
 }
 

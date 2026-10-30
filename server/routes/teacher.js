@@ -30,7 +30,8 @@ router.get('/profile', authUser, (req, res) => {
 
 // 提交/重新提交认证资料（multipart: 表单字段 + 图片走 /api/upload 后传 URL，兼容直接传 URL）
 router.post('/profile', authUser, (req, res) => {
-  const { realName, idCardNo, certType, certImageUrl, degreeImageUrl, otherCertImageUrl, subject, education, major, graduateSchool, teachableGrades, intro, yearsExperience, phone } = req.body || {};
+  const b = req.body || {};
+  const { realName, idCardNo, certType, certImageUrl, degreeImageUrl, otherCertImageUrl, subject, education, major, graduateSchool, teachableGrades, intro, yearsExperience, phone } = b;
   if (!realName || !certType) {
     return res.status(400).json({ code: 400, message: '请填写姓名并选择证件类型' });
   }
@@ -44,14 +45,17 @@ router.post('/profile', authUser, (req, res) => {
   if (phone && !/^1\d{10}$/.test(String(phone))) {
     return res.status(400).json({ code: 400, message: '请填写正确的手机号' });
   }
+  // 证书照片：优先取 certImages 数组（最多5张），兼容旧的三个独立字段
+  let certImages = Array.isArray(b.certImages) ? b.certImages.filter(Boolean).slice(0, 5) : [];
+  if (!certImages.length) {
+    certImages = [certImageUrl, degreeImageUrl, otherCertImageUrl].filter(Boolean);
+  }
   const now = Date.now();
   const { submitProfile } = require('../services/profile');
   const result = submitProfile(req.user.id, {
     realName,
     certType,
-    certImageUrl: certImageUrl || '',
-    degreeImageUrl: degreeImageUrl || null,
-    otherCertImageUrl: otherCertImageUrl || null,
+    certImages,
     subject: subjectStr,
     education: education || null,
     major: major || null,
@@ -158,6 +162,7 @@ function sanitizeProfile(p) {
     certImageUrl: p.cert_image_url,
     degreeImageUrl: p.degree_image_url,
     otherCertImageUrl: p.other_cert_image_url,
+    certImages: require('../services/profile').extractCertImages(p),
     subject: p.subject,
     education: p.education,
     major: p.major,

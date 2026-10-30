@@ -67,12 +67,8 @@
       <text class="cert-value">{{profile ? (profile.education || '未填写') : '未认证'}}</text>
     </view>
     <view class="cert-row">
-      <text class="cert-label">教师资格证</text>
-      <text class="cert-value">{{profile && profile.certImageUrl ? '已上传' : '未上传'}}</text>
-    </view>
-    <view class="cert-row">
-      <text class="cert-label">其他证书</text>
-      <text class="cert-value">{{profile && profile.otherCertImageUrl ? '已上传' : '未上传'}}</text>
+      <text class="cert-label">证书照片</text>
+      <text class="cert-value">{{profile && profile.certImages ? profile.certImages.length + ' 张' : '未上传'}}</text>
     </view>
     <view class="cert-status" wx:if="{{profile}}">
       <text class="tag {{profile.auditStatus === 'approved' ? 'tag-green' : profile.auditStatus === 'pending' ? 'tag-orange' : 'tag-red'}}">

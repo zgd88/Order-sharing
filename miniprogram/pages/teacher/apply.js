@@ -18,9 +18,7 @@ Page({
       teachableGrades: [],    // 多选
       intro: '',
       yearsExperience: '',
-      certImageUrl: '',
-      degreeImageUrl: '',
-      otherCertImageUrl: '',
+      certImages: [],         // 证书照片（最多5张）
     },
     certTypes: [
       { value: 'teacher_certificate', label: '教师资格证' },
@@ -59,9 +57,7 @@ Page({
             teachableGrades,
             intro: p.intro || '',
             yearsExperience: p.yearsExperience ? String(p.yearsExperience) : '',
-            certImageUrl: api.fullUrl(p.certImageUrl),
-            degreeImageUrl: api.fullUrl(p.degreeImageUrl),
-            otherCertImageUrl: api.fullUrl(p.otherCertImageUrl),
+            certImages: (p.certImages || []).map((u) => api.fullUrl(u)),
           },
           certTypeIndex: this.data.certTypes.findIndex((t) => t.value === (p.certType || 'teacher_certificate')),
           educationIndex: eduIdx >= 0 ? eduIdx : 1,
@@ -119,22 +115,36 @@ Page({
       });
     }
   },
-  chooseImage(e) {
-    const key = e.currentTarget.dataset.key;
+  // 证书照片：动态增删，最多 5 张
+  addImage() {
+    const remain = 5 - this.data.form.certImages.length;
+    if (remain <= 0) {
+      wx.showToast({ title: '最多上传 5 张照片', icon: 'none' });
+      return;
+    }
     wx.chooseMedia({
-      count: 1,
+      count: remain,
       mediaType: ['image'],
       success: async (r) => {
         wx.showLoading({ title: '上传中...' });
         try {
-          const url = await api.upload(r.tempFiles[0].tempFilePath);
-          this.setData({ [`form.${key}`]: url });
+          const urls = [...this.data.form.certImages];
+          for (const f of r.tempFiles) {
+            const url = await api.upload(f.tempFilePath);
+            urls.push(url);
+          }
+          this.setData({ 'form.certImages': urls.slice(0, 5) });
           wx.hideLoading();
         } catch (err) {
           wx.hideLoading();
         }
       },
     });
+  },
+  removeImage(e) {
+    const idx = Number(e.currentTarget.dataset.idx);
+    const images = this.data.form.certImages.filter((_, i) => i !== idx);
+    this.setData({ 'form.certImages': images });
   },
   async submit() {
     const f = this.data.form;

@@ -156,8 +156,9 @@ db.prepare(
      '初二,初三', '老简介', 8, 'approved', ?, ?, ?)`
 ).run(now2, now2, now2);
 const baseData = {
-  realName: '王明', certType: 'teacher_certificate', certImageUrl: '/uploads/new.jpg',
-  degreeImageUrl: null, otherCertImageUrl: '/uploads/other.jpg', subject: '数学,物理',
+  realName: '王明', certType: 'teacher_certificate',
+  certImages: ['/uploads/new.jpg', '/uploads/other.jpg', '/uploads/third.jpg', '/uploads/4.jpg', '/uploads/5.jpg'],
+  subject: '数学,物理',
   education: '硕士', major: '应用数学', graduateSchool: '浙江大学', grades: '初二,初三,高一',
   intro: '新简介', years: 9,
 };
@@ -185,7 +186,10 @@ auditChange(change2.id, 'approve', '', 1);
 const p3 = db.prepare('SELECT * FROM teacher_profiles WHERE user_id = 101').get();
 assertEq(p3.audit_status, 'approved', '通过修改后保持 approved');
 assertEq(p3.education, '硕士', '新学历生效');
-assertEq(p3.cert_image_url, '/uploads/new.jpg', '新证书生效');
+assertEq(p3.cert_image_url, '/uploads/new.jpg', '新证书1生效');
+assertEq(p3.cert_image_url5, '/uploads/5.jpg', '第5张证书生效（最多5张）');
+const { extractCertImages } = require('../services/profile');
+assertEq(extractCertImages(p3).length, 5, '提取5张证书照片');
 assertEq(p3.subject, '数学,物理', '新科目生效');
 
 // 首轮审核（无资料/被驳回）仍走直接模式

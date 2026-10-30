@@ -35,9 +35,11 @@ CREATE TABLE IF NOT EXISTS teacher_profiles (
   id_card_no       TEXT,                       -- 选填
   cert_type        TEXT NOT NULL
                    CHECK (cert_type IN ('teacher_certificate','degree')),
-  cert_image_url   TEXT,                       -- 选填
-  degree_image_url TEXT,
-  other_cert_image_url TEXT,                   -- 其他证书（选填）
+  cert_image_url   TEXT,                       -- 证书照片1（选填）
+  degree_image_url TEXT,                       -- 证书照片2
+  other_cert_image_url TEXT,                   -- 证书照片3
+  cert_image_url4  TEXT,                       -- 证书照片4
+  cert_image_url5  TEXT,                       -- 证书照片5（最多5张）
   subject          TEXT NOT NULL,              -- 授课科目（多选，逗号分隔）
   education        TEXT,                       -- 学历：大专/本科/硕士/博士/其他
   major            TEXT,                       -- 专业
@@ -183,6 +185,8 @@ CREATE TABLE IF NOT EXISTS teacher_profile_changes (
   cert_image_url        TEXT,
   degree_image_url      TEXT,
   other_cert_image_url  TEXT,
+  cert_image_url4       TEXT,
+  cert_image_url5       TEXT,
   subject               TEXT,
   education             TEXT,
   major                 TEXT,

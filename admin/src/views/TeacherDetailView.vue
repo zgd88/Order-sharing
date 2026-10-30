@@ -35,21 +35,21 @@
       <div class="img-section">
         <div class="img-title">证件照片</div>
         <div class="img-list">
-          <div class="img-item" v-if="t.certImageUrl">
-            <el-image :src="imgUrl(t.certImageUrl)" :preview-src-list="[imgUrl(t.certImageUrl)]" fit="contain" class="cert-img" />
-            <div class="img-label">证件照片</div>
+          <div class="img-item" v-if="t.certImages && t.certImages.length">
+            <el-image
+              v-for="(img, i) in t.certImages"
+              :key="img"
+              :src="imgUrl(img)"
+              :preview-src-list="t.certImages.map((u) => imgUrl(u))"
+              :initial-index="i"
+              fit="contain"
+              class="cert-img"
+            />
+            <div class="img-label">证书照片（{{ t.certImages.length }} 张，点击可查看大图）</div>
           </div>
           <div class="img-item" v-else>
             <div class="cert-img empty">未上传</div>
-            <div class="img-label">证件照片</div>
-          </div>
-          <div class="img-item" v-if="t.degreeImageUrl">
-            <el-image :src="imgUrl(t.degreeImageUrl)" :preview-src-list="[imgUrl(t.degreeImageUrl)]" fit="contain" class="cert-img" />
-            <div class="img-label">学历证书</div>
-          </div>
-          <div class="img-item" v-if="t.otherCertImageUrl">
-            <el-image :src="imgUrl(t.otherCertImageUrl)" :preview-src-list="[imgUrl(t.otherCertImageUrl)]" fit="contain" class="cert-img" />
-            <div class="img-label">其他证书</div>
+            <div class="img-label">证书照片</div>
           </div>
         </div>
       </div>
@@ -70,18 +70,18 @@
           <el-descriptions-item label="提交时间">{{ formatTime(t.pendingChange.createdAt) }}</el-descriptions-item>
           <el-descriptions-item label="新个人简介" :span="2">{{ t.pendingChange.intro || '-' }}</el-descriptions-item>
         </el-descriptions>
-        <div class="img-list" style="margin-top: 12px">
-          <div class="img-item" v-if="t.pendingChange.certImageUrl">
-            <el-image :src="imgUrl(t.pendingChange.certImageUrl)" :preview-src-list="[imgUrl(t.pendingChange.certImageUrl)]" fit="contain" class="cert-img small" />
-            <div class="img-label">新教师资格证</div>
-          </div>
-          <div class="img-item" v-if="t.pendingChange.degreeImageUrl">
-            <el-image :src="imgUrl(t.pendingChange.degreeImageUrl)" :preview-src-list="[imgUrl(t.pendingChange.degreeImageUrl)]" fit="contain" class="cert-img small" />
-            <div class="img-label">新学历证</div>
-          </div>
-          <div class="img-item" v-if="t.pendingChange.otherCertImageUrl">
-            <el-image :src="imgUrl(t.pendingChange.otherCertImageUrl)" :preview-src-list="[imgUrl(t.pendingChange.otherCertImageUrl)]" fit="contain" class="cert-img small" />
-            <div class="img-label">新其他证书</div>
+        <div class="img-list" style="margin-top: 12px" v-if="t.pendingChange.certImages && t.pendingChange.certImages.length">
+          <div class="img-item">
+            <el-image
+              v-for="(img, i) in t.pendingChange.certImages"
+              :key="img"
+              :src="imgUrl(img)"
+              :preview-src-list="t.pendingChange.certImages.map((u) => imgUrl(u))"
+              :initial-index="i"
+              fit="contain"
+              class="cert-img small"
+            />
+            <div class="img-label">新证书照片（{{ t.pendingChange.certImages.length }} 张）</div>
           </div>
         </div>
       </div>

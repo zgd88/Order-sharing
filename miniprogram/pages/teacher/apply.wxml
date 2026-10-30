@@ -73,21 +73,17 @@
       <textarea class="form-textarea" placeholder="教学特色、获奖经历等（选填）" value="{{form.intro}}" data-key="intro" bindinput="onField" />
     </view>
     <view class="form-item">
-      <view class="form-label">证件照片（选填）</view>
-      <view class="upload-row">
-        <view class="upload-box" data-key="certImageUrl" bindtap="chooseImage">
-          <image wx:if="{{form.certImageUrl}}" class="upload-img" src="{{form.certImageUrl}}" mode="aspectFill" />
-          <view wx:else class="upload-plus">＋<view class="upload-text">教师资格证(选填)</view></view>
+      <view class="form-label">证书照片（选填，最多 5 张）</view>
+      <view class="upload-grid">
+        <view class="upload-box" wx:for="{{form.certImages}}" wx:key="*this">
+          <image class="upload-img" src="{{item}}" mode="aspectFill" />
+          <view class="upload-del" data-idx="{{index}}" catchtap="removeImage">✕</view>
         </view>
-        <view class="upload-box" data-key="degreeImageUrl" bindtap="chooseImage">
-          <image wx:if="{{form.degreeImageUrl}}" class="upload-img" src="{{form.degreeImageUrl}}" mode="aspectFill" />
-          <view wx:else class="upload-plus">＋<view class="upload-text">学历证(选填)</view></view>
-        </view>
-        <view class="upload-box" data-key="otherCertImageUrl" bindtap="chooseImage">
-          <image wx:if="{{form.otherCertImageUrl}}" class="upload-img" src="{{form.otherCertImageUrl}}" mode="aspectFill" />
-          <view wx:else class="upload-plus">＋<view class="upload-text">其他证书(选填)</view></view>
+        <view class="upload-box" wx:if="{{form.certImages.length < 5}}" bindtap="addImage">
+          <view class="upload-plus">＋<view class="upload-text">添加照片</view></view>
         </view>
       </view>
+      <view class="upload-count">{{form.certImages.length}}/5 张</view>
     </view>
     <button class="btn-primary submit-btn" bindtap="submit">提交审核</button>
     <view class="form-tip">提交后由平台人工审核，审核通过即可发布课程、投递需求</view>

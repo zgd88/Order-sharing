@@ -1,30 +1,46 @@
 const db = require('../db');
 
+// 证书照片数组 → 5 个存储位（最多5张）
+function mapCertImages(images) {
+  const list = Array.isArray(images) ? images.filter(Boolean).slice(0, 5) : [];
+  return {
+    certImageUrl: list[0] || '',
+    degreeImageUrl: list[1] || null,
+    otherCertImageUrl: list[2] || null,
+    certImageUrl4: list[3] || null,
+    certImageUrl5: list[4] || null,
+  };
+}
+
 // 提交/更新认证资料：
 // - 无资料 或 首轮审核未通过（pending/rejected）→ 直接更新原资料，进入待审核
 // - 已通过 → 生成资质变更单待重新审核，原资质继续生效，审核通过后才更新
 function submitProfile(userId, data) {
   const existing = db.prepare('SELECT * FROM teacher_profiles WHERE user_id = ?').get(userId);
   const now = Date.now();
+  const imgs = mapCertImages(data.certImages);
   if (!existing || existing.audit_status !== 'approved') {
     if (existing) {
       db.prepare(
         `UPDATE teacher_profiles SET real_name = ?, cert_type = ?, cert_image_url = ?,
-           degree_image_url = ?, other_cert_image_url = ?, subject = ?, education = ?, major = ?,
-           graduate_school = ?, teachable_grades = ?, intro = ?, years_experience = ?,
-           audit_status = 'pending', reject_reason = NULL, audited_by = NULL, audited_at = NULL, updated_at = ?
+           degree_image_url = ?, other_cert_image_url = ?, cert_image_url4 = ?, cert_image_url5 = ?,
+           subject = ?, education = ?, major = ?, graduate_school = ?, teachable_grades = ?,
+           intro = ?, years_experience = ?, audit_status = 'pending',
+           reject_reason = NULL, audited_by = NULL, audited_at = NULL, updated_at = ?
          WHERE user_id = ?`
-      ).run(data.realName, data.certType, data.certImageUrl, data.degreeImageUrl, data.otherCertImageUrl,
+      ).run(data.realName, data.certType, imgs.certImageUrl, imgs.degreeImageUrl, imgs.otherCertImageUrl,
+        imgs.certImageUrl4, imgs.certImageUrl5,
         data.subject, data.education, data.major, data.graduateSchool, data.grades,
         data.intro, data.years, now, userId);
     } else {
       db.prepare(
         `INSERT INTO teacher_profiles
          (user_id, real_name, cert_type, cert_image_url, degree_image_url, other_cert_image_url,
-          subject, education, major, graduate_school, teachable_grades, intro, years_experience,
-          audit_status, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)`
-      ).run(userId, data.realName, data.certType, data.certImageUrl, data.degreeImageUrl, data.otherCertImageUrl,
+          cert_image_url4, cert_image_url5, subject, education, major, graduate_school, teachable_grades,
+          intro, years_experience, audit_status, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)`
+      ).run(userId, data.realName, data.certType, imgs.certImageUrl, imgs.degreeImageUrl, imgs.otherCertImageUrl,
+        imgs.certImageUrl4, imgs.certImageUrl5,
         data.subject, data.education, data.major, data.graduateSchool, data.grades,
         data.intro, data.years, now, now);
     }
@@ -37,10 +53,11 @@ function submitProfile(userId, data) {
   db.prepare(
     `INSERT INTO teacher_profile_changes
      (user_id, real_name, cert_type, cert_image_url, degree_image_url, other_cert_image_url,
-      subject, education, major, graduate_school, teachable_grades, intro, years_experience,
-      audit_status, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)`
-  ).run(userId, data.realName, data.certType, data.certImageUrl, data.degreeImageUrl, data.otherCertImageUrl,
+      cert_image_url4, cert_image_url5, subject, education, major, graduate_school, teachable_grades,
+      intro, years_experience, audit_status, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)`
+  ).run(userId, data.realName, data.certType, imgs.certImageUrl, imgs.degreeImageUrl, imgs.otherCertImageUrl,
+    imgs.certImageUrl4, imgs.certImageUrl5,
     data.subject, data.education, data.major, data.graduateSchool, data.grades,
     data.intro, data.years, now, now);
   return { mode: 'change' };
@@ -73,14 +90,15 @@ function auditChange(changeId, action, reason, adminId) {
   if (action === 'approve') {
     db.prepare(
       `UPDATE teacher_profiles SET real_name = ?, cert_type = ?, cert_image_url = ?,
-         degree_image_url = ?, other_cert_image_url = ?, subject = ?, education = ?, major = ?,
-         graduate_school = ?, teachable_grades = ?, intro = ?, years_experience = ?,
-         audit_status = 'approved', reject_reason = NULL, audited_by = ?, audited_at = ?, updated_at = ?
+         degree_image_url = ?, other_cert_image_url = ?, cert_image_url4 = ?, cert_image_url5 = ?,
+         subject = ?, education = ?, major = ?, graduate_school = ?, teachable_grades = ?,
+         intro = ?, years_experience = ?, audit_status = 'approved',
+         reject_reason = NULL, audited_by = ?, audited_at = ?, updated_at = ?
        WHERE user_id = ?`
     ).run(change.real_name, change.cert_type, change.cert_image_url, change.degree_image_url,
-      change.other_cert_image_url, change.subject, change.education, change.major,
-      change.graduate_school, change.teachable_grades, change.intro, change.years_experience,
-      adminId, now, now, change.user_id);
+      change.other_cert_image_url, change.cert_image_url4, change.cert_image_url5,
+      change.subject, change.education, change.major, change.graduate_school, change.teachable_grades,
+      change.intro, change.years_experience, adminId, now, now, change.user_id);
     db.prepare(
       "UPDATE teacher_profile_changes SET audit_status = 'approved', reject_reason = NULL, audited_by = ?, audited_at = ?, updated_at = ? WHERE id = ?"
     ).run(adminId, now, now, changeId);
@@ -92,4 +110,11 @@ function auditChange(changeId, action, reason, adminId) {
   return { ok: true };
 }
 
-module.exports = { submitProfile, getPendingChange, getLatestChange, auditChange };
+// 从档案/变更单行提取证书照片数组（非空）
+function extractCertImages(row) {
+  if (!row) return [];
+  return [row.cert_image_url, row.degree_image_url, row.other_cert_image_url,
+    row.cert_image_url4, row.cert_image_url5].filter(Boolean);
+}
+
+module.exports = { submitProfile, getPendingChange, getLatestChange, auditChange, extractCertImages };
