@@ -33,9 +33,9 @@
       </el-descriptions>
 
       <div class="img-section">
-        <div class="img-title">证件照片</div>
-        <div class="img-list">
-          <div class="img-item" v-if="t.certImages && t.certImages.length">
+        <div class="img-title">证书照片（{{ t.certImages ? t.certImages.length : 0 }} 张）</div>
+        <div class="img-list" v-if="t.certImages && t.certImages.length">
+          <div class="img-item">
             <el-image
               v-for="(img, i) in t.certImages"
               :key="img"
@@ -45,12 +45,10 @@
               fit="contain"
               class="cert-img"
             />
-            <div class="img-label">证书照片（{{ t.certImages.length }} 张，点击可查看大图）</div>
           </div>
-          <div class="img-item" v-else>
-            <div class="cert-img empty">未上传</div>
-            <div class="img-label">证书照片</div>
-          </div>
+        </div>
+        <div class="img-list" v-else>
+          <div class="cert-img empty">未上传</div>
         </div>
       </div>
 
