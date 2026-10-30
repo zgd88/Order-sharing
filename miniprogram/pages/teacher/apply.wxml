@@ -1,16 +1,16 @@
 <view class="container">
   <!-- 状态提示 -->
   <view wx:if="{{profile && profile.auditStatus === 'pending'}}" class="status-card pending">
-    ⏳ 认证审核中：平台将在 1-2 个工作日内完成审核
+    ⏳ 认证审核中：修改后重新提交将重新排队审核
   </view>
   <view wx:elif="{{profile && profile.auditStatus === 'approved'}}" class="status-card approved">
-    ✅ 认证已通过，可以发布拼好课、投递家长需求了
+    ✅ 认证已通过。修改下方资料并重新提交后需平台重新审核，审核通过前将暂停发布课程与投递
   </view>
   <view wx:elif="{{profile && profile.auditStatus === 'rejected'}}" class="status-card rejected">
     ❌ 认证被驳回：{{profile.rejectReason}}，请修改后重新提交
   </view>
 
-  <view wx:if="{{!profile || profile.auditStatus !== 'approved'}}" class="card form-card">
+  <view class="card form-card">
     <view class="form-title">资质认证</view>
     <view class="form-item">
       <view class="form-label">真实姓名</view>

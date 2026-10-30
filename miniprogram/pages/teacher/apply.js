@@ -42,7 +42,8 @@ Page({
     try {
       const p = await api.get('/api/teacher/profile', {}, { silent: true });
       this.setData({ profile: p, loading: false });
-      if (p && (p.auditStatus === 'rejected' || !p.auditStatus)) {
+      // 任何状态都预填资料：已通过/审核中的老师也可修改并重新提交（提交后进入重新审核）
+      if (p) {
         const eduIdx = this.data.educations.findIndex((e) => e === p.education);
         const subject = p.subject ? p.subject.split(',') : [];
         const teachableGrades = p.teachableGrades ? p.teachableGrades.split(',') : [];
