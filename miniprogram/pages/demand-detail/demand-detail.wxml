@@ -41,8 +41,7 @@
           <view class="resume-meta">{{app.showYears}}年教龄 · {{app.education || '学历未填'}}{{app.major ? ' · ' + app.major : ''}}</view>
         </view>
       </view>
-      <view wx:if="{{app.showSubjects || app.showGrades || app.showAddress}}" class="resume-tags">
-        <view wx:if="{{app.showSubjects}}" class="resume-tag-row"><text class="r-label">授课科目</text>{{app.showSubjects}}</view>
+      <view wx:if="{{app.showGrades || app.showAddress}}" class="resume-tags">
         <view wx:if="{{app.showGrades}}" class="resume-tag-row"><text class="r-label">可教年级</text>{{app.showGrades}}</view>
         <view wx:if="{{app.showAddress}}" class="resume-tag-row"><text class="r-label">常驻地址</text>{{app.showAddress}}</view>
       </view>
