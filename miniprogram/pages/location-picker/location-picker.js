@@ -1,6 +1,9 @@
 const api = require('../../utils/request');
 const loc = require('../../utils/location');
 
+// 默认地图中心（杭州，获取定位失败时使用）
+const DEFAULT_CENTER = { latitude: 30.2741, longitude: 120.1551 };
+
 Page({
   data: {
     keyword: '',
@@ -8,61 +11,27 @@ Page({
     searching: false,
     searched: false,
     noKey: false,
-    current: null,        // 当前位置 { address, latitude, longitude, province, city }
-    currentCity: '',      // 当前城市（搜索默认范围）
-    locating: false,
+    // 地图
+    mapLat: DEFAULT_CENTER.latitude,
+    mapLng: DEFAULT_CENTER.longitude,
+    markers: [],
+    // 当前选中位置
+    selection: null,       // { address, latitude, longitude, province, city }
+    resolving: false,      // 逆地理解析中
   },
-  onLoad(options) {
-    if (options.keyword) {
-      this.setData({ keyword: options.keyword });
-    }
+  onLoad() {
     this.getCurrentLocation();
   },
-  // 自动获取当前位置坐标并逆地理解析出地址
+  // 自动获取当前位置并作为初始选中位置
   getCurrentLocation() {
     const doGet = () => {
-      this.setData({ locating: true });
       wx.getLocation({
         type: 'gcj02',
         success: async (r) => {
-          const loca = { latitude: r.latitude, longitude: r.longitude };
-          try {
-            const geo = await api.get(
-              '/api/location/regeo',
-              { location: `${r.longitude},${r.latitude}` },
-              { auth: false, silent: true }
-            );
-            const province = loc.parseProvince(geo.province || geo.formattedAddress);
-            const cityRaw = (geo.city || '').replace(/市$/, '');
-            const city = cityRaw + (geo.district || '');
-            this.setData({
-              current: {
-                address: geo.formattedAddress || `纬度${r.latitude.toFixed(4)}, 经度${r.longitude.toFixed(4)}`,
-                latitude: r.latitude,
-                longitude: r.longitude,
-                province,
-                city,
-              },
-              currentCity: geo.district || geo.city || '',
-            });
-          } catch (e) {
-            // 逆地理失败（无Key/网络）时，仅记录坐标用于地图居中
-            this.setData({
-              current: {
-                address: '当前位置（点击地图选点确认）',
-                latitude: r.latitude,
-                longitude: r.longitude,
-                province: '',
-                city: '',
-              },
-            });
-          }
-          this.setData({ locating: false });
+          this.setMapCenter(r.latitude, r.longitude);
+          await this.resolveLocation(r.latitude, r.longitude);
         },
-        fail: () => {
-          // 定位失败（未授权等）不打扰用户，搜索与地图选点仍可用
-          this.setData({ locating: false });
-        },
+        fail: () => { /* 定位失败：地图停留在默认中心，可手动点选 */ },
       });
     };
     wx.getSetting({
@@ -73,6 +42,47 @@ Page({
       fail: doGet,
     });
   },
+  setMapCenter(lat, lng) {
+    this.setData({ mapLat: lat, mapLng: lng });
+  },
+  // 逆地理：坐标 → 地址（无Key时降级为坐标文本）
+  async resolveLocation(lat, lng) {
+    this.setData({
+      resolving: true,
+      markers: [{ id: 1, latitude: lat, longitude: lng, width: 34, height: 44, iconPath: '/images/location-pin.png' }],
+    });
+    let result;
+    try {
+      const geo = await api.get('/api/location/regeo', { location: `${lng},${lat}` }, { auth: false, silent: true });
+      const province = loc.parseProvince(geo.province || geo.formattedAddress);
+      const cityRaw = (geo.city || '').replace(/市$/, '');
+      result = {
+        address: geo.formattedAddress || '',
+        latitude: lat,
+        longitude: lng,
+        province,
+        city: cityRaw + (geo.district || ''),
+      };
+    } catch (e) {
+      // 无 Key 或网络失败：用坐标占位，仍可确认选择
+      result = {
+        address: `坐标 ${lng.toFixed(5)}, ${lat.toFixed(5)}（未解析出地址）`,
+        latitude: lat,
+        longitude: lng,
+        province: '',
+        city: '',
+      };
+    }
+    this.setData({ selection: result, resolving: false });
+  },
+  // 点击地图选点
+  onMapTap(e) {
+    const { latitude, longitude } = e.detail || {};
+    if (!latitude || !longitude) return;
+    this.setMapCenter(latitude, longitude);
+    this.resolveLocation(latitude, longitude);
+  },
+  // 搜索
   onKeyword(e) {
     this.setData({ keyword: e.detail.value });
   },
@@ -88,8 +98,7 @@ Page({
     this.setData({ searching: true, noKey: false });
     try {
       const params = { keywords: kw };
-      if (this.data.currentCity) params.city = this.data.currentCity;
-      const list = await api.get('/api/location/search', params, { auth: false });
+      const list = await api.get('/api/location/search', params, { auth: false, silent: true });
       this.setData({
         results: list.map((p) => ({
           ...p,
@@ -106,92 +115,37 @@ Page({
     }
     this.setData({ searching: false });
   },
-  // 快速选择当前位置
-  onSelectCurrent() {
-    const c = this.data.current;
-    if (!c) return;
-    this.emitSelect({
-      address: c.address,
-      latitude: c.latitude,
-      longitude: c.longitude,
-      province: c.province,
-      city: c.city,
-    });
-  },
-  // 点选搜索结果
+  // 点选搜索结果 → 直接选中并返回
   onSelectPoi(e) {
     const poi = e.currentTarget.dataset.poi;
     const address = poi.fullAddress;
     const [lng, lat] = (poi.location || ',').split(',').map(Number);
-    const result = {
+    this.emitSelect({
       address,
       latitude: lat,
       longitude: lng,
-      // 结构化信息（表单提交与筛选使用）
       province: loc.parseProvince(poi.pname || address),
       city: poi.cityname && poi.adname
         ? poi.cityname.replace(/市$/, '') + poi.adname
         : loc.parseCity(address),
-    };
-    this.emitSelect(result);
+    });
   },
-  // 在地图上选点（微信自带地图：支持搜索与点选；有当前位置时地图自动居中）
-  chooseOnMap() {
-    const doChoose = () => {
-      const opts = {};
-      if (this.data.current) {
-        opts.latitude = this.data.current.latitude;
-        opts.longitude = this.data.current.longitude;
-      }
-      wx.chooseLocation({
-        ...opts,
-        success: (r) => {
-          const address = r.address || r.name || '';
-          this.emitSelect({
-            address,
-            latitude: r.latitude,
-            longitude: r.longitude,
-            province: loc.parseProvince(address),
-            city: loc.parseCity(address),
-          });
-        },
-        fail: (e) => {
-          console.error('[chooseLocation] fail:', e);
-          const msg = (e && e.errMsg) || '';
-          if (msg.includes('auth') || msg.includes('permission')) {
-            wx.showModal({
-              title: '需要位置权限',
-              content: '在地图上选点需要使用您的位置权限，请在设置中开启',
-              confirmText: '去设置',
-              cancelText: '取消',
-              success: (r2) => {
-                if (r2.confirm) wx.openSetting();
-              },
-            });
-          } else {
-            wx.showToast({ title: `打开地图失败：${msg || '未知错误'}`, icon: 'none', duration: 2500 });
-          }
-        },
-      });
-    };
-    // 先检查授权状态：曾拒绝过则引导去设置，否则直接唤起（首次会弹系统授权框）
-    wx.getSetting({
-      success: (res) => {
-        if (res.authSetting['scope.userLocation'] === false) {
-          wx.showModal({
-            title: '需要位置权限',
-            content: '在地图上选点需要使用您的位置权限，请在设置中开启',
-            confirmText: '去设置',
-            cancelText: '取消',
-            success: (r2) => {
-              if (r2.confirm) wx.openSetting();
-            },
-          });
-        } else {
-          doChoose();
-        }
-      },
-      fail: doChoose,
+  closeResults() {
+    this.setData({ results: [], searched: false });
+  },
+  // 确认当前地图选中位置
+  confirmSelection() {
+    const s = this.data.selection;
+    if (!s) {
+      wx.showToast({ title: '请点击地图选择位置', icon: 'none' });
+      return;
+    }
+    this.emitSelect({
+      address: s.address,
+      latitude: s.latitude,
+      longitude: s.longitude,
+      province: s.province,
+      city: s.city,
     });
   },
   emitSelect(result) {

@@ -16,48 +16,51 @@
     <view class="search-btn" bindtap="search">{{searching ? '搜索中' : '搜索'}}</view>
   </view>
 
-  <!-- 未配置 Key 提示 -->
-  <view wx:if="{{noKey}}" class="nokey-tip">
-    ⚠️ 高德地图 Key 未配置，暂时无法搜索；可点击底部"在地图上选点"选择位置
+  <!-- 地图（直接内嵌展示，点击即可选点） -->
+  <map
+    id="pickerMap"
+    class="picker-map"
+    latitude="{{mapLat}}"
+    longitude="{{mapLng}}"
+    scale="15"
+    show-location
+    markers="{{markers}}"
+    bindtap="onMapTap"
+  ></map>
+
+  <!-- 搜索结果浮层 -->
+  <view wx:if="{{searched}}" class="results-panel">
+    <view class="results-head">
+      <text>搜索结果</text>
+      <text class="results-close" bindtap="closeResults">✕</text>
+    </view>
+    <scroll-view scroll-y class="results-list">
+      <view wx:if="{{noKey}}" class="empty">⚠️ 高德地图 Key 未配置，暂时无法搜索，可直接在地图上点选</view>
+      <view wx:elif="{{!results.length}}" class="empty">未找到相关地点，换个关键词试试</view>
+      <view
+        class="poi-item"
+        wx:for="{{results}}"
+        wx:key="id"
+        data-poi="{{item}}"
+        bindtap="onSelectPoi"
+      >
+        <view class="poi-icon">📍</view>
+        <view class="poi-info">
+          <view class="poi-name">{{item.name}}</view>
+          <view class="poi-address">{{item.fullAddress}}</view>
+        </view>
+        <view class="poi-arrow">›</view>
+      </view>
+    </scroll-view>
   </view>
 
-  <!-- 搜索结果 -->
-  <scroll-view scroll-y class="result-list">
-    <!-- 当前位置卡片：进入页面自动获取坐标并解析地址 -->
-    <view wx:if="{{current}}" class="current-card" bindtap="onSelectCurrent">
-      <view class="current-icon">📍</view>
-      <view class="current-info">
-        <view class="current-name">
-          当前位置
-          <text wx:if="{{locating}}" class="locating-text">定位中...</text>
-        </view>
-        <view class="current-addr">{{current.address}}</view>
-      </view>
-      <view class="current-badge">快速选择</view>
-    </view>
-    <view wx:if="{{searched && !results.length && !noKey}}" class="empty">未找到相关地点，换个关键词试试</view>
-    <view
-      class="poi-item"
-      wx:for="{{results}}"
-      wx:key="id"
-      data-poi="{{item}}"
-      bindtap="onSelectPoi"
-    >
-      <view class="poi-icon">📍</view>
-      <view class="poi-info">
-        <view class="poi-name">{{item.name}}</view>
-        <view class="poi-address">{{item.fullAddress}}</view>
-      </view>
-      <view class="poi-arrow">›</view>
-    </view>
-    <view wx:if="{{!searched}}" class="empty hint">
-      <view>输入关键词搜索高德地图地点</view>
-      <view class="hint-sub">或点击底部按钮在地图上点选</view>
-    </view>
-  </scroll-view>
-
-  <!-- 底部：地图点选 -->
+  <!-- 底部确认栏 -->
   <view class="bottom-bar">
-    <button class="map-btn" bindtap="chooseOnMap">🗺️ 在地图上选点</button>
+    <view class="selected-addr">
+      <text class="selected-label">已选位置</text>
+      <text class="selected-text">{{selection ? selection.address : '点击地图选择位置'}}</text>
+      <text wx:if="{{resolving}}" class="resolving">解析中...</text>
+    </view>
+    <view class="confirm-btn" bindtap="confirmSelection">确认选择</view>
   </view>
 </view>
