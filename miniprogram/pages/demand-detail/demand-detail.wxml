@@ -46,7 +46,6 @@
         <view wx:if="{{app.showGrades}}" class="resume-tag-row"><text class="r-label">可教年级</text>{{app.showGrades}}</view>
         <view wx:if="{{app.showAddress}}" class="resume-tag-row"><text class="r-label">常驻地址</text>{{app.showAddress}}</view>
       </view>
-      <view class="resume-view-link">查看完整简历 ›</view>
       <button
         wx:if="{{order.status === 'recruiting'}}"
         class="select-btn"

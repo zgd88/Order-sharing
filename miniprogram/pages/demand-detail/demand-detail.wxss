@@ -124,15 +124,8 @@
   line-height: 1.6;
 }
 
-.resume-view-link {
-  margin-top: 16rpx;
-  text-align: right;
-  color: #4A90E2;
-  font-size: 24rpx;
-}
-
 .select-btn {
-  margin-top: 16rpx;
+  margin-top: 20rpx;
   background: #4A90E2;
   color: #fff;
   border-radius: 44rpx;
