@@ -33,7 +33,5 @@
     <view class="section-title">投递留言</view>
     <view class="intro-text">{{teacher.note}}</view>
   </view>
-
-  <view class="privacy-tip">🔒 老师联系方式仅平台客服可见，如需对接请联系平台客服</view>
 </view>
 <view wx:if="{{loading}}" class="empty">加载中...</view>

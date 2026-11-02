@@ -69,9 +69,3 @@
   white-space: pre-wrap;
 }
 
-.privacy-tip {
-  font-size: 22rpx;
-  color: #999;
-  text-align: center;
-  padding: 20rpx 0 40rpx;
-}
