@@ -67,7 +67,7 @@ function joinCourse(courseId, parentId) {
     const course = db.prepare('SELECT * FROM courses WHERE id = ?').get(courseId);
     if (!course) throw err(404, '课程不存在');
     if (course.teacher_id === parentId) throw err(400, '不能报名自己的课程');
-    // 惰性流局：截止已过且未成团
+    // 惰性流局：报名截止已过且未成团
     if (course.status === 'recruiting' && Date.now() > course.deadline_at) {
       failCourseTx(courseId, 'flow');
       throw err(400, '报名已截止');

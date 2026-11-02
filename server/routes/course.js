@@ -61,7 +61,7 @@ router.post('/', authTeacher, (req, res) => {
 router.get('/', (req, res) => {
   const { subject, grade, province, city, lat, lng } = req.query;
   const now = Date.now();
-  // 惰性流局
+  // 惰性流局：报名截止已过未成团
   const overdue = db
     .prepare("SELECT id FROM courses WHERE status = 'recruiting' AND deadline_at <= ?")
     .all(now);
@@ -76,7 +76,9 @@ router.get('/', (req, res) => {
     JOIN users u ON u.id = c.teacher_id
     JOIN teacher_profiles p ON p.user_id = c.teacher_id AND p.audit_status = 'approved'
     WHERE c.status IN ('recruiting','formed')`;
-  const args = [];
+  // 首页不展示已过报名截止日期的课程
+  sql += ' AND c.deadline_at > ?';
+  const args = [now];
   if (province) { sql += ' AND c.province = ?'; args.push(province); }
   if (city) { sql += ' AND c.city LIKE ?'; args.push(`%${city}%`); }
   if (subject && subject !== '全部') { sql += ' AND c.subject = ?'; args.push(subject); }
