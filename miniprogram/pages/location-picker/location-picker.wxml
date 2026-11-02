@@ -23,6 +23,18 @@
 
   <!-- 搜索结果 -->
   <scroll-view scroll-y class="result-list">
+    <!-- 当前位置卡片：进入页面自动获取坐标并解析地址 -->
+    <view wx:if="{{current}}" class="current-card" bindtap="onSelectCurrent">
+      <view class="current-icon">📍</view>
+      <view class="current-info">
+        <view class="current-name">
+          当前位置
+          <text wx:if="{{locating}}" class="locating-text">定位中...</text>
+        </view>
+        <view class="current-addr">{{current.address}}</view>
+      </view>
+      <view class="current-badge">快速选择</view>
+    </view>
     <view wx:if="{{searched && !results.length && !noKey}}" class="empty">未找到相关地点，换个关键词试试</view>
     <view
       class="poi-item"

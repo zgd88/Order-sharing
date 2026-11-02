@@ -62,6 +62,61 @@
   flex-shrink: 0;
 }
 
+/* 当前位置卡片 */
+.current-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background: rgba(74, 144, 226, 0.08);
+  border: 2rpx solid rgba(74, 144, 226, 0.4);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.current-icon {
+  font-size: 40rpx;
+  flex-shrink: 0;
+}
+
+.current-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.current-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #4A90E2;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.locating-text {
+  font-size: 22rpx;
+  color: #999;
+  font-weight: 400;
+}
+
+.current-addr {
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 6rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.current-badge {
+  flex-shrink: 0;
+  background: #4A90E2;
+  color: #fff;
+  font-size: 22rpx;
+  border-radius: 24rpx;
+  padding: 6rpx 20rpx;
+}
+
 /* 结果列表 */
 .result-list {
   flex: 1;
