@@ -1,0 +1,39 @@
+<view class="container" wx:if="{{!loading && teacher}}">
+  <!-- 头部信息卡 -->
+  <view class="card hero-card">
+    <image class="avatar big" src="{{teacher.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
+    <view class="hero-info">
+      <view class="hero-name">
+        {{teacher.name}}
+        <text wx:if="{{teacher.gender}}" class="tag tag-blue">{{teacher.gender}}</text>
+        <text wx:if="{{teacher.identityTag}}" class="tag tag-orange">{{teacher.identityTag}}</text>
+      </view>
+      <view class="hero-meta">{{teacher.years}}年教龄{{teacher.education ? ' · ' + teacher.education : ''}}{{teacher.major ? ' · ' + teacher.major : ''}}</view>
+      <view class="hero-meta" wx:if="{{teacher.graduateSchool}}">毕业院校：{{teacher.graduateSchool}}</view>
+      <view class="hero-apply">投递岗位：{{demandSubject}}{{demandGrade ? ' · ' + demandGrade : ''}}家教</view>
+    </view>
+  </view>
+
+  <!-- 教学范围 -->
+  <view class="card">
+    <view class="section-title">教学范围</view>
+    <view class="info-row" wx:if="{{teacher.subjects}}"><text class="info-label">授课科目</text><text>{{teacher.subjects}}</text></view>
+    <view class="info-row" wx:if="{{teacher.grades}}"><text class="info-label">可教年级</text><text>{{teacher.grades}}</text></view>
+    <view class="info-row" wx:if="{{teacher.address}}"><text class="info-label">常驻地址</text><text>{{teacher.address}}</text></view>
+  </view>
+
+  <!-- 个人简介 -->
+  <view class="card" wx:if="{{teacher.intro}}">
+    <view class="section-title">个人简介</view>
+    <view class="intro-text">{{teacher.intro}}</view>
+  </view>
+
+  <!-- 投递留言 -->
+  <view class="card" wx:if="{{teacher.note}}">
+    <view class="section-title">投递留言</view>
+    <view class="intro-text">{{teacher.note}}</view>
+  </view>
+
+  <view class="privacy-tip">🔒 老师联系方式仅平台客服可见，如需对接请联系平台客服</view>
+</view>
+<view wx:if="{{loading}}" class="empty">加载中...</view>

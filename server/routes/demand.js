@@ -57,6 +57,7 @@ router.get('/:id', (req, res) => {
       `SELECT a.*, u.nickname, u.avatar_url, u.phone AS teacher_phone,
               p.real_name, p.education, p.major, p.subject AS teacher_subject,
               p.years_experience, p.intro AS teacher_intro,
+              p.graduate_school, p.teachable_grades,
               r.name AS resume_name, r.gender, r.address AS resume_address,
               r.subjects AS resume_subjects, r.grades AS resume_grades,
               r.years_experience AS resume_years, r.identity_tag, r.intro AS resume_intro
@@ -77,7 +78,9 @@ router.get('/:id', (req, res) => {
       realName: a.real_name,
       education: a.education,
       major: a.major,
+      graduateSchool: a.graduate_school,
       teacherSubject: a.teacher_subject,
+      teachableGrades: a.teachable_grades,
       yearsExperience: a.years_experience,
       teacherIntro: a.teacher_intro,
       note: a.note,

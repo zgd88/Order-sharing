@@ -25,6 +25,8 @@
       wx:for="{{applications}}"
       wx:key="id"
       wx:for-item="app"
+      data-app="{{app}}"
+      bindtap="onViewTeacher"
     >
       <view class="resume-head">
         <image class="avatar" src="{{app.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
@@ -44,15 +46,12 @@
         <view wx:if="{{app.showGrades}}" class="resume-tag-row"><text class="r-label">可教年级</text>{{app.showGrades}}</view>
         <view wx:if="{{app.showAddress}}" class="resume-tag-row"><text class="r-label">常驻地址</text>{{app.showAddress}}</view>
       </view>
-      <view wx:if="{{app.showIntro || app.note}}" class="resume-intro">
-        <view wx:if="{{app.showIntro}}">自我介绍：{{app.showIntro}}</view>
-        <view wx:if="{{app.note}}">授课经历：{{app.note}}</view>
-      </view>
+      <view class="resume-view-link">查看完整简历 ›</view>
       <button
         wx:if="{{order.status === 'recruiting'}}"
         class="select-btn"
         data-app="{{app}}"
-        bindtap="onSelectTeacher"
+        catchtap="onSelectTeacher"
       >选择该老师</button>
     </view>
   </view>

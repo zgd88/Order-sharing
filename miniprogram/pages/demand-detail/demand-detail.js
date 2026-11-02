@@ -53,6 +53,12 @@ Page({
       this.setData({ loading: false });
     }
   },
+  onViewTeacher(e) {
+    const app = e.currentTarget.dataset.app;
+    wx.navigateTo({
+      url: `/pages/teacher-resume-view/teacher-resume-view?demandId=${this.data.id}&appId=${app.id}`,
+    });
+  },
   onSelectTeacher(e) {
     const app = e.currentTarget.dataset.app;
     wx.showModal({

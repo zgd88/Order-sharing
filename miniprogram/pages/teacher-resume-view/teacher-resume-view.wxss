@@ -1,0 +1,77 @@
+.hero-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 24rpx;
+}
+
+.avatar.big {
+  width: 130rpx;
+  height: 130rpx;
+}
+
+.hero-info {
+  flex: 1;
+}
+
+.hero-name {
+  font-size: 34rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.hero-meta {
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 8rpx;
+}
+
+.hero-apply {
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  color: #4A90E2;
+  background: rgba(74, 144, 226, 0.08);
+  border-radius: 8rpx;
+  padding: 10rpx 16rpx;
+  display: inline-block;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+}
+
+.info-row {
+  display: flex;
+  gap: 16rpx;
+  font-size: 26rpx;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  color: #999;
+  flex-shrink: 0;
+  width: 130rpx;
+}
+
+.intro-text {
+  font-size: 26rpx;
+  color: #555;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.privacy-tip {
+  font-size: 22rpx;
+  color: #999;
+  text-align: center;
+  padding: 20rpx 0 40rpx;
+}

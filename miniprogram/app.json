@@ -10,6 +10,7 @@
     "pages/poster/poster",
     "pages/demand-form/demand-form",
     "pages/demand-detail/demand-detail",
+    "pages/teacher-resume-view/teacher-resume-view",
     "pages/location-picker/location-picker",
     "pages/notifications/notifications",
     "pages/teacher/apply",
