@@ -223,6 +223,7 @@ Page({
       ]);
       const list = (courses || []).map((c) => ({
         ...c,
+        priceText: util.fen2yuan(c.current_unit_price_cents),
         statusInfo: util.courseStatus(c.status),
       }));
       this.setData({

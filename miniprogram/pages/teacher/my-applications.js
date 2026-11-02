@@ -19,6 +19,7 @@ Page({
       const rows = await api.get('/api/teacher/applications');
       const list = rows.map((a) => ({
         ...a,
+        rateText: util.fen2yuan(a.hourlyRateCents),
         statusInfo: this.statusInfo(a),
         timeText: this.timeAgo(a.createdAt),
       }));

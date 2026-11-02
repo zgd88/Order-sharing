@@ -1,6 +1,7 @@
 <view class="container" wx:if="{{!loading && order}}">
   <view class="card head-card">
     <view class="head-title">{{order.subject}}{{order.grade ? ' · ' + order.grade : ''}}家教</view>
+    <view class="head-rate">¥{{rateText}}<text class="unit">/小时</text></view>
     <view class="head-meta">📍 {{order.addressDisplay}}</view>
     <view class="privacy-note">🔒 为保护家长隐私，仅显示区域位置，电话与门牌号仅平台客服可见</view>
   </view>

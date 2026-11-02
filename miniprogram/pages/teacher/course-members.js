@@ -18,11 +18,18 @@ Page({
   async load() {
     try {
       const c = await api.get(`/api/teacher/courses/${this.data.id}`);
+      const members = (c.members || []).map((m) => ({
+        ...m,
+        priceText: util.fen2yuan(m.current_price_cents),
+      }));
       this.setData({
         course: c,
-        members: c.members || [],
+        members,
         loading: false,
         statusInfo: util.courseStatus(c.status),
+        priceText: util.fen2yuan(c.current_unit_price_cents),
+        tiersView: (c.tiers || []).map((t) => `满${t.min_people}人 ¥${util.fen2yuan(t.price_cents)}`).join(' · '),
+        grossText: util.fen2yuan(members.reduce((s, m) => s + m.current_price_cents, 0)),
       });
     } catch (e) {
       this.setData({ loading: false });

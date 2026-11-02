@@ -161,7 +161,7 @@
     <view class="card t-course" wx:for="{{recentCourses}}" wx:key="id" data-id="{{item.id}}" bindtap="goMyCourses">
       <view>
         <view class="t-course-title">{{item.title}}</view>
-        <view class="t-course-meta">👥 {{item.enrolled_count}}/{{item.max_students}}人</view>
+        <view class="t-course-meta">👥 {{item.enrolled_count}}/{{item.max_students}}人 · ¥{{item.priceText}}/节</view>
       </view>
       <view class="tag {{item.status === 'recruiting' ? 'tag-blue' : item.status === 'formed' ? 'tag-green' : 'tag-gray'}}">{{item.statusInfo.text}}</view>
     </view>
