@@ -61,9 +61,6 @@ Page({
   goApply() {
     wx.navigateTo({ url: '/pages/teacher/apply' });
   },
-  goEarnings() {
-    wx.navigateTo({ url: '/pages/teacher/earnings' });
-  },
   goResume() {
     wx.navigateTo({ url: '/pages/teacher/resume' });
   },

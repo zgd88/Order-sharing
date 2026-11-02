@@ -217,27 +217,18 @@ Page({
   // ---------------- 老师工作台 ----------------
   async loadTeacherHome() {
     try {
-      const [profile, courses, earnings] = await Promise.all([
+      const [profile, courses] = await Promise.all([
         api.get('/api/teacher/profile', {}, { silent: true }),
         api.get('/api/teacher/courses', {}, { silent: true }),
-        api.get('/api/teacher/earnings', {}, { silent: true }),
       ]);
       const list = (courses || []).map((c) => ({
         ...c,
-        priceText: util.fen2yuan(c.current_unit_price_cents),
         statusInfo: util.courseStatus(c.status),
       }));
-      const e2 = earnings || { totalGrossCents: 0, totalNetCents: 0, platformRate: 0.05 };
       this.setData({
         profile,
         teacherCourses: list,
         recentCourses: list.slice(0, 3),
-        stats: {
-          ...e2,
-          grossYuan: (e2.totalGrossCents / 100).toFixed(0),
-          netYuan: (e2.totalNetCents / 100).toFixed(0),
-          ratePercent: (e2.platformRate * 100).toFixed(0),
-        },
       });
     } catch (e) {
       // 未认证时 teacher/courses 会 403，静默处理，profile 已获取
@@ -255,10 +246,6 @@ Page({
 
   goMyCourses() {
     wx.navigateTo({ url: '/pages/teacher/my-courses' });
-  },
-
-  goEarnings() {
-    wx.navigateTo({ url: '/pages/teacher/earnings' });
   },
 
   goDemandHall() {

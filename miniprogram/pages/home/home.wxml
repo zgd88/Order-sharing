@@ -112,14 +112,6 @@
       </view>
       <view wx:if="{{profile && profile.auditStatus === 'approved'}}" class="stats-row">
         <view class="stat-item">
-          <view class="stat-num">¥{{stats.grossYuan}}</view>
-          <view class="stat-label">累计报名金额</view>
-        </view>
-        <view class="stat-item">
-          <view class="stat-num">¥{{stats.netYuan}}</view>
-          <view class="stat-label">预计收益(扣{{stats.ratePercent}}%抽成)</view>
-        </view>
-        <view class="stat-item">
           <view class="stat-num">{{teacherCourses.length}}</view>
           <view class="stat-label">我的课程</view>
         </view>
@@ -159,10 +151,6 @@
         <view class="quick-icon">🔔</view>
         <view class="quick-label">消息</view>
       </view>
-      <view class="quick-item" bindtap="goEarnings">
-        <view class="quick-icon">💰</view>
-        <view class="quick-label">收益明细</view>
-      </view>
       <view class="quick-item" bindtap="goApply">
         <view class="quick-icon">🎓</view>
         <view class="quick-label">资质认证</view>
@@ -173,7 +161,7 @@
     <view class="card t-course" wx:for="{{recentCourses}}" wx:key="id" data-id="{{item.id}}" bindtap="goMyCourses">
       <view>
         <view class="t-course-title">{{item.title}}</view>
-        <view class="t-course-meta">👥 {{item.enrolled_count}}/{{item.max_students}}人 · ¥{{item.priceText}}/节</view>
+        <view class="t-course-meta">👥 {{item.enrolled_count}}/{{item.max_students}}人</view>
       </view>
       <view class="tag {{item.status === 'recruiting' ? 'tag-blue' : item.status === 'formed' ? 'tag-green' : 'tag-gray'}}">{{item.statusInfo.text}}</view>
     </view>

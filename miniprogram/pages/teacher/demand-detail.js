@@ -27,7 +27,6 @@ Page({
         order: o,
         applied: o.applied,
         loading: false,
-        rateText: util.fen2yuan(o.hourlyRateCents),
       });
     } catch (e) {
       this.setData({ loading: false });

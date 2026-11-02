@@ -9,7 +9,7 @@
       <view class="a-title">{{item.subject}}{{item.grade ? ' · ' + item.grade : ''}}家教</view>
       <view class="tag {{item.statusInfo.cls}}">{{item.statusInfo.text}}</view>
     </view>
-    <view class="a-meta">💰 ¥{{item.rateText}}/小时 · 📍 {{item.addressDisplay}}</view>
+    <view class="a-meta">📍 {{item.addressDisplay}}</view>
     <view class="a-foot">
       <text class="a-desc">{{item.statusInfo.desc}}</text>
       <text class="a-time">{{item.timeText}}</text>

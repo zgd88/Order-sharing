@@ -14,7 +14,6 @@
   <view class="card demand-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="onDemandTap">
     <view class="d-head">
       <view class="d-title">{{item.subject}}{{item.grade ? ' · ' + item.grade : ''}}家教</view>
-      <view class="d-rate price">¥{{item.rateText}}<text class="unit">/小时</text></view>
     </view>
     <view class="d-meta">📍 {{item.addressDisplay}}</view>
     <view class="d-foot">

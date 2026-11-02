@@ -31,9 +31,6 @@
       <text>📄 我的简历</text>
       <view class="arrow"></view>
     </view>
-    <view class="cell" bindtap="goEarnings">
-      <text>💰 收益明细</text>
-      <view class="arrow"></view>
     </view>
   </view>
 

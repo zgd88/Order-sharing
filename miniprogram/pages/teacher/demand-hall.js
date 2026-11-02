@@ -21,7 +21,6 @@ Page({
       const rows = await api.get('/api/teacher/demands');
       let list = rows.map((o) => ({
         ...o,
-        rateText: util.fen2yuan(o.hourlyRateCents),
         timeText: this.timeAgo(o.createdAt),
       }));
       const subject = this.data.subjects[this.data.subjectIndex];

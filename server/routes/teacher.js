@@ -117,34 +117,6 @@ router.post('/courses/:id/cancel', authTeacher, (req, res) => {
   res.json({ code: 0, message: '课程已取消，家长将收到退款' });
 });
 
-// 收益明细（MVP：按占座统计，平台抽成 5% 预留展示）
-router.get('/earnings', authTeacher, (req, res) => {
-  const rows = db
-    .prepare(
-      `SELECT c.id, c.title, c.subject, c.status, c.enrolled_count, c.current_unit_price_cents,
-              c.max_students, c.created_at,
-              COALESCE((SELECT SUM(e.current_price_cents) FROM enrollments e
-                        WHERE e.course_id = c.id AND e.status = 'joined'), 0) AS gross_cents
-       FROM courses c WHERE c.teacher_id = ? ORDER BY c.created_at DESC`
-    )
-    .all(req.user.id);
-  const totalGross = rows.reduce((s, r) => s + r.gross_cents, 0);
-  const PLATFORM_RATE = 0.05;
-  res.json({
-    code: 0,
-    data: {
-      platformRate: PLATFORM_RATE,
-      totalGrossCents: totalGross,
-      totalNetCents: Math.round(totalGross * (1 - PLATFORM_RATE)),
-      courses: rows.map((r) => ({
-        ...r,
-        grossCents: r.gross_cents,
-        netCents: Math.round(r.gross_cents * (1 - PLATFORM_RATE)),
-      })),
-    },
-  });
-});
-
 function attachTiers(c) {
   const tiers = db
     .prepare('SELECT min_people, price_cents FROM course_tiers WHERE course_id = ? ORDER BY min_people ASC')
