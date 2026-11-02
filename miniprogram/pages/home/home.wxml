@@ -1,4 +1,4 @@
-<!-- 家长视图：拼好课大厅 -->
+<!-- 家长视图：共学课大厅 -->
 <block wx:if="{{!isTeacher}}">
   <view class="container">
     <swiper wx:if="{{banners.length}}" class="banner-swiper" indicator-dots autoplay circular indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff">
@@ -66,7 +66,7 @@
     </view>
 
     <view wx:if="{{loading && !loaded}}" class="empty">加载中...</view>
-    <view wx:if="{{loaded && !list.length}}" class="empty">暂无拼好课，快去邀请老师发布吧</view>
+    <view wx:if="{{loaded && !list.length}}" class="empty">暂无共学课，快去邀请老师发布吧</view>
 
     <view class="course-card card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="onCourseTap">
       <view class="course-head">
@@ -106,9 +106,9 @@
       <view class="hero-top">
         <view>
           <view class="hero-title">老师工作台</view>
-          <view class="hero-sub">发布拼好课，让家长帮你拉人拼团</view>
+          <view class="hero-sub">发布共学课，让家长帮你拉人共学</view>
         </view>
-        <button wx:if="{{profile && profile.auditStatus === 'approved'}}" class="publish-btn" bindtap="goPublish">＋ 发布拼好课</button>
+        <button wx:if="{{profile && profile.auditStatus === 'approved'}}" class="publish-btn" bindtap="goPublish">＋ 发布共学课</button>
       </view>
       <view wx:if="{{profile && profile.auditStatus === 'approved'}}" class="stats-row">
         <view class="stat-item">
@@ -147,7 +147,7 @@
       </view>
       <view class="quick-item" bindtap="goMyApplications">
         <view class="quick-icon">📨</view>
-        <view class="quick-label">我的投递</view>
+        <view class="quick-label">沟通记录</view>
       </view>
       <view class="quick-item" bindtap="goMyCourses">
         <view class="quick-icon">📚</view>

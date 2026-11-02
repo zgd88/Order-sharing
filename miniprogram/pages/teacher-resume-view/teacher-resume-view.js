@@ -22,7 +22,7 @@ Page({
       const o = await api.get(`/api/demands/${demandId}`, {}, { silent: true });
       const app = (o.applications || []).find((a) => String(a.id) === String(appId));
       if (!app) {
-        wx.showToast({ title: '该投递不存在', icon: 'none' });
+        wx.showToast({ title: '该意向不存在', icon: 'none' });
         setTimeout(() => wx.navigateBack(), 800);
         return;
       }

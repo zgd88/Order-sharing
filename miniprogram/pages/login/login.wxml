@@ -1,8 +1,8 @@
 <view class="login-page">
   <view class="logo-area">
     <view class="logo">培学</view>
-    <view class="slogan">同城教培拼好课</view>
-    <view class="sub-slogan">好老师拼着学，越拼越便宜</view>
+    <view class="slogan">同城教培共学课</view>
+    <view class="sub-slogan">好老师一起学，越学越省</view>
   </view>
 
   <view class="auth-box">

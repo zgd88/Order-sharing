@@ -26,7 +26,7 @@
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#4A90E2",
-    "navigationBarTitleText": "培学拼课",
+    "navigationBarTitleText": "培学共学课",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
@@ -54,7 +54,7 @@
   "lazyCodeLoading": "requiredComponents",
   "permission": {
     "scope.userLocation": {
-      "desc": "用于查找你附近的拼好课"
+      "desc": "用于查找你附近的共学课"
     }
   },
   "requiredPrivateInfos": ["getLocation", "chooseLocation"]

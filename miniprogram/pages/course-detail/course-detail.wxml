@@ -15,7 +15,7 @@
 
   <!-- 阶梯价目表 -->
   <view class="card">
-    <view class="section-title">阶梯拼团价</view>
+    <view class="section-title">阶梯共学价</view>
     <view class="tier-list">
       <view class="tier-row {{item.isCurrent ? 'current' : ''}}" wx:for="{{tiersView}}" wx:key="minPeople">
         <view class="tier-count">满 {{item.minPeople}} 人</view>
@@ -23,20 +23,20 @@
         <view wx:if="{{item.isCurrent}}" class="tag tag-green">当前</view>
       </view>
     </view>
-    <view class="tier-tip">💡 先按当前档价参团，人数增加自动降价，差价原路退还</view>
+    <view class="tier-tip">💡 先按当前档价占座，人数增加自动降价，差价原路退还</view>
   </view>
 
-  <!-- 拼团进度 -->
+  <!-- 共学进度 -->
   <view class="card">
-    <view class="section-title">拼团进度</view>
+    <view class="section-title">共学进度</view>
     <view class="progress-bar">
       <view class="progress-inner" style="width: {{course.enrolledCount / course.maxStudents * 100}}%"></view>
     </view>
     <view class="progress-meta">
-      <text>已参团 {{course.enrolledCount}} 人</text>
+      <text>已占座 {{course.enrolledCount}} 人</text>
       <text class="{{course.needToForm > 0 ? 'orange' : 'green'}}">{{needToFormText}}</text>
     </view>
-    <view class="progress-meta sub">满 {{course.minStudents}} 人成团 · 上限 {{course.maxStudents}} 人 · 报名截止 {{deadlineText}}</view>
+    <view class="progress-meta sub">满 {{course.minStudents}} 人共学达成 · 上限 {{course.maxStudents}} 人 · 报名截止 {{deadlineText}}</view>
   </view>
 
   <!-- 老师信息 -->
@@ -66,7 +66,7 @@
       <view class="share-text">生成海报</view>
     </view>
     <button class="join-btn {{joined ? 'joined' : ''}}" disabled="{{!canJoin}}" bindtap="onJoin">
-      {{joined ? '已参团' : (canJoin ? '立即参团' : '不可参团')}}
+      {{joined ? '已占座' : (canJoin ? '立即占座' : '不可占座')}}
     </button>
   </view>
 </view>

@@ -86,7 +86,7 @@
       <view class="upload-count">{{form.certImages.length}}/5 张</view>
     </view>
     <button class="btn-primary submit-btn" bindtap="submit">提交审核</button>
-    <view class="form-tip">提交后由平台人工审核，审核通过即可发布课程、投递需求</view>
+    <view class="form-tip">提交后由平台人工审核，审核通过即可发布课程、意向需求</view>
   </view>
 
   <!-- 多选弹层 -->

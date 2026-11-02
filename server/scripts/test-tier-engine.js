@@ -1,4 +1,4 @@
-// 阶梯定价引擎集成测试：使用独立临时数据库，覆盖阶梯退差/成团/流局/取消/幂等
+// 阶梯定价引擎集成测试：使用独立临时数据库，覆盖阶梯退差/共学达成/流局/取消/幂等
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
@@ -70,7 +70,7 @@ assert(!validateTiers([{ min_people: 1, price_cents: 10000 }, { min_people: 5, p
 assert(!validateTiers([{ min_people: 1, price_cents: 10000 }], 0).ok, '档位人数不超上限');
 assertEq(priceForCount([{ min_people: 1, price_cents: 10000 }, { min_people: 3, price_cents: 9000 }, { min_people: 5, price_cents: 8000 }], 2, ), 10000, '2人落档=100元');
 
-console.log('== 2. 阶梯退差：3档课程（满1人100 / 满3人90 / 满5人80），成团3人 ==');
+console.log('== 2. 阶梯退差：3档课程（满1人100 / 满3人90 / 满5人80），共学达成3人 ==');
 insertUser(1, 'teacher'); // 老师
 for (let i = 100; i <= 108; i++) insertUser(i); // 8位家长
 insertCourse({
@@ -85,7 +85,7 @@ insertCourse({
 let r1 = enroll(1, 100);
 assert(r1.ok, '第1人报名成功');
 assertEq(getEnrollment(1, 100).price_at_join_cents, 10000, '第1人按最高阶梯100元入团');
-assertEq(getCourse(1).status, 'recruiting', '1人未成团');
+assertEq(getCourse(1).status, 'recruiting', '1人未共学达成');
 assertEq(getCourse(1).enrolled_count, 1, '人数=1');
 
 let r2 = enroll(1, 101);
@@ -103,10 +103,10 @@ assertEq(getEnrollment(1, 102).current_price_cents, 9000, '第3人按90元');
 assertEq(getRefunds(1).filter((x) => x.type === 'tier_diff').length, 2, '2条退差记录（仅先前2人）');
 assertEq(totalRefunded(100), 1000, '第1人累计退10元');
 assertEq(totalRefunded(102), 0, '第3人无退差（直接按90付费）');
-assertEq(getCourse(1).status, 'formed', '3人达成成团');
-assertEq(r3.course.status, 'formed', '返回结果携带成团状态');
+assertEq(getCourse(1).status, 'formed', '3人达成共学达成');
+assertEq(r3.course.status, 'formed', '返回结果携带共学达成状态');
 
-console.log('== 3. 成团后继续报名：第4人、第5人触发降至80元 ==');
+console.log('== 3. 共学达成后继续报名：第4人、第5人触发降至80元 ==');
 enroll(1, 103);
 assertEq(getEnrollment(1, 100).current_price_cents, 9000, '4人仍90元档');
 let r5 = enroll(1, 104);
@@ -122,7 +122,7 @@ assertEq(totalRefunded(104), 0, '第5人无退差（直接按80付费）');
 
 console.log('== 4. 幂等与边界 ==');
 const rDup = enroll(1, 100);
-assert(!rDup.ok && rDup.message.includes('已参团'), '重复报名被拒');
+assert(!rDup.ok && rDup.message.includes('已占座'), '重复报名被拒');
 const rTeacher = enroll(1, 1);
 assert(!rTeacher.ok && rTeacher.message.includes('自己的课程'), '老师不能报自己课程');
 
@@ -133,7 +133,7 @@ const rFull = enroll(1, 108);
 assert(!rFull.ok && rFull.message.includes('满员'), '满员后报名被拒');
 assertEq(getEnrollment(1, 107).current_price_cents, 8000, '第7人按80元');
 
-console.log('== 6. 流局：截止未成团 → 全额退款 + 退差台账正确 ==');
+console.log('== 6. 流局：截止未共学达成 → 全额退款 + 退差台账正确 ==');
 insertCourse({
   id: 2, teacherId: 1, minStudents: 5, maxStudents: 8, deadlineAt: Date.now() - 1000,
   tiers: [
@@ -153,11 +153,11 @@ insE.run(2, 102, 3, 10000, 9000, past, past);
 testDb.prepare('UPDATE courses SET enrolled_count = 3, current_unit_price_cents = 9000 WHERE id = 2').run();
 failCourse(2);
 assertEq(getCourse(2).status, 'failed', '课程标记流局');
-assertEq(getRefunds(2).filter((x) => x.type === 'flow_refund').length, 3, '3条流局退款');
+assertEq(getRefunds(2).filter((x) => x.type === 'flow_refund').length, 3, '3条未达成退款');
 const f100 = getRefunds(2).filter((x) => x.type === 'flow_refund' && x.parent_id === 100)[0];
 assertEq(f100.amount_cents, 9000, '流局退剩余应付90元');
 assertEq(totalRefunded(100), 2000 + 9000, '第1人合计退 11000 = 入团10000 + 流局后不再重复（注：跨课程合计）');
-assertEq(getEnrollment(2, 100).status, 'expired', '参团记录置为 expired');
+assertEq(getEnrollment(2, 100).status, 'expired', '占座记录置为 expired');
 const rAfterFail = enroll(2, 103);
 assert(!rAfterFail.ok, '流局后禁止报名');
 
@@ -166,13 +166,13 @@ insertCourse({
   id: 3, teacherId: 1, minStudents: 3, maxStudents: 8,
   tiers: [{ min_people: 1, price_cents: 10000 }, { min_people: 3, price_cents: 9000 }],
 });
-enroll(3, 100); enroll(3, 101); enroll(3, 102); // 成团，各降至90
+enroll(3, 100); enroll(3, 101); enroll(3, 102); // 共学达成，各降至90
 cancelCourse(3, 'teacher');
 assertEq(getCourse(3).status, 'cancelled', '课程标记取消');
 assertEq(getRefunds(3).filter((x) => x.type === 'course_cancel_refund').length, 3, '3条取消退款');
 const c100 = getRefunds(3).filter((x) => x.type === 'course_cancel_refund' && x.parent_id === 100)[0];
 assertEq(c100.amount_cents, 9000, '取消退剩余应付90元');
-assertEq(getEnrollment(3, 100).status, 'expired', '参团记录置为 expired');
+assertEq(getEnrollment(3, 100).status, 'expired', '占座记录置为 expired');
 assertEq(getEnrollment(3, 100).expired_reason, 'teacher_cancel', '过期原因 teacher_cancel');
 
 console.log('== 8. 课程完成 ==');
@@ -181,7 +181,7 @@ insertCourse({
   tiers: [{ min_people: 1, price_cents: 10000 }, { min_people: 2, price_cents: 9000 }],
   startTime: Date.now() - 5 * 3600e3, endTime: Date.now() - 1000, deadlineAt: Date.now() - 6 * 3600e3,
 });
-// 已过截止但已成团：手工置 formed
+// 已过截止但共学达成：手工置 formed
 testDb.prepare("UPDATE courses SET status = 'formed' WHERE id = 4").run();
 assertEq(finishCourse(4), true, '课程可推进为 finished');
 assertEq(getCourse(4).status, 'finished', '课程标记 finished');

@@ -25,17 +25,17 @@ function selectTeacher(orderId, applicationId, parentId) {
   db.exec('BEGIN IMMEDIATE');
   try {
     const order = db.prepare('SELECT * FROM demand_orders WHERE id = ?').get(orderId);
-    if (!order) throw err(404, '订单不存在');
-    if (order.parent_id !== parentId) throw err(403, '无权操作该订单');
-    // 核心校验：必须仍处于招募中，防止并发双锁
+    if (!order) throw err(404, '需求不存在');
+    if (order.parent_id !== parentId) throw err(403, '无权操作该需求');
+    // 核心校验：必须仍处于意向征集中，防止并发双锁
     if (order.status !== 'recruiting') {
-      if (order.status === 'locked') throw err(409, '订单已锁定，请勿重复操作');
-      throw err(400, '订单已关闭');
+      if (order.status === 'locked') throw err(409, '需求已锁定，请勿重复操作');
+      throw err(400, '需求已关闭');
     }
     const app = db
       .prepare("SELECT * FROM demand_applications WHERE id = ? AND order_id = ? AND status = 'pending'")
       .get(applicationId, orderId);
-    if (!app) throw err(400, '该投递不存在或已失效');
+    if (!app) throw err(400, '该意向不存在或已失效');
 
     const now = Date.now();
     db.prepare(
@@ -46,7 +46,7 @@ function selectTeacher(orderId, applicationId, parentId) {
       "UPDATE demand_applications SET status = 'selected', updated_at = ? WHERE id = ?"
     ).run(now, app.id);
 
-    // 其他投递自动失效 + 站内信
+    // 其他意向自动失效 + 站内信
     const others = db
       .prepare("SELECT * FROM demand_applications WHERE order_id = ? AND status = 'pending'")
       .all(orderId);
@@ -57,12 +57,12 @@ function selectTeacher(orderId, applicationId, parentId) {
       db.prepare(
         "UPDATE demand_applications SET status = 'invalid', invalid_reason = 'locked_by_other', updated_at = ? WHERE id = ?"
       ).run(now, o.id);
-      insNoti.run(o.teacher_id, 'order_locked_by_other', '订单已被接走',
-        `您投递的「${order.subject}」需求已被其他老师拿下，投递已失效。`, now);
+      insNoti.run(o.teacher_id, 'order_locked_by_other', '意向已失效',
+        `您对「${order.subject}」需求表达的意向已失效（该需求已被其他老师锁定）。`, now);
     }
     // 通知被选中的老师
     insNoti.run(app.teacher_id, 'selected', '恭喜，家长已选择您',
-      `您投递的「${order.subject}」需求已被家长选中，订单已锁定，平台客服将尽快与您联系。`, now);
+      `您对「${order.subject}」需求表达的意向已被家长选中，平台客服将尽快与您联系。`, now);
 
     db.exec('COMMIT');
     return {
@@ -77,13 +77,13 @@ function selectTeacher(orderId, applicationId, parentId) {
   }
 }
 
-// 关闭订单（仅招募中的可关）
+// 关闭需求（仅意向征集中的可关）
 function closeOrder(orderId, parentId) {
   db.exec('BEGIN IMMEDIATE');
   try {
     const order = db.prepare('SELECT * FROM demand_orders WHERE id = ?').get(orderId);
-    if (!order) throw err(404, '订单不存在');
-    if (order.parent_id !== parentId) throw err(403, '无权操作该订单');
+    if (!order) throw err(404, '需求不存在');
+    if (order.parent_id !== parentId) throw err(403, '无权操作该需求');
     if (order.status !== 'recruiting') throw err(400, '当前状态不可关闭');
     const now = Date.now();
     db.prepare("UPDATE demand_orders SET status = 'closed', closed_at = ?, updated_at = ? WHERE id = ?")
@@ -98,8 +98,8 @@ function closeOrder(orderId, parentId) {
       db.prepare(
         "UPDATE demand_applications SET status = 'invalid', invalid_reason = 'order_closed', updated_at = ? WHERE id = ?"
       ).run(now, a.id);
-      insNoti.run(a.teacher_id, 'order_closed', '订单已关闭',
-        `您投递的「${order.subject}」需求已被家长关闭，投递已失效。`, now);
+      insNoti.run(a.teacher_id, 'order_closed', '需求已关闭',
+        `您对「${order.subject}」需求表达的意向已失效（家长已关闭该需求）。`, now);
     }
     db.exec('COMMIT');
     return { ok: true };
@@ -109,16 +109,16 @@ function closeOrder(orderId, parentId) {
   }
 }
 
-// 投递简历（一个老师对一个订单只能投递一次）
+// 表达意向（一个老师对一个需求只能表达一次）
 function applyOrder(orderId, teacherId, note) {
   const order = db.prepare('SELECT * FROM demand_orders WHERE id = ?').get(orderId);
-  if (!order) return { ok: false, code: 404, message: '订单不存在' };
-  if (order.parent_id === teacherId) return { ok: false, code: 400, message: '不能投递自己的订单' };
-  if (order.status !== 'recruiting') return { ok: false, code: 400, message: '该订单已停止招募' };
+  if (!order) return { ok: false, code: 404, message: '需求不存在' };
+  if (order.parent_id === teacherId) return { ok: false, code: 400, message: '不能对自己的需求表达意向' };
+  if (order.status !== 'recruiting') return { ok: false, code: 400, message: '该需求已停止征集' };
   const existing = db
     .prepare('SELECT * FROM demand_applications WHERE order_id = ? AND teacher_id = ?')
     .get(orderId, teacherId);
-  if (existing) return { ok: false, code: 400, message: '您已投递过该订单，请勿重复投递' };
+  if (existing) return { ok: false, code: 400, message: '您已对该需求表达过意向，请勿重复表达' };
   const now = Date.now();
   const ins = db
     .prepare(

@@ -12,13 +12,13 @@
     <view wx:if="{{order.status === 'locked'}}" class="locked-tip">🔒 订单已锁定，平台客服将尽快与您和老师联系</view>
   </view>
 
-  <!-- 收到的简历 -->
+  <!-- 收到的意向 -->
   <view class="card">
     <view class="section-title">
-      收到的简历（{{applications.length}}）
-      <text wx:if="{{order.status === 'locked'}}" class="stop-text">· 已停止招募</text>
+      收到的意向（{{applications.length}}）
+      <text wx:if="{{order.status === 'locked'}}" class="stop-text">· 已停止征集</text>
     </view>
-    <view wx:if="{{!applications.length}}" class="empty small">还没有老师投递，请耐心等待</view>
+    <view wx:if="{{!applications.length}}" class="empty small">还没有老师表达意向，请耐心等待</view>
 
     <view
       class="resume-card {{order.status !== 'recruiting' && app.id !== order.selectedApplicationId ? 'disabled' : ''}}"

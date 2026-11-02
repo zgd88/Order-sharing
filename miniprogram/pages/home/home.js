@@ -90,7 +90,7 @@ Page({
       lowestPriceText: util.fen2yuan(c.lowestPriceCents),
       statusInfo: util.courseStatus(c.status),
       startText: util.formatTime(c.startTime),
-      needToFormText: c.needToForm > 0 ? `还差${c.needToForm}人成团` : '已成团',
+      needToFormText: c.needToForm > 0 ? `还差${c.needToForm}人共学达成` : '共学达成',
     }));
     this.setData({ list });
     return data;

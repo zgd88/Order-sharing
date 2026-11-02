@@ -11,7 +11,7 @@
     <view class="earn-row" wx:for="{{courses}}" wx:key="id">
       <view class="earn-info">
         <view class="earn-title">{{item.title}}</view>
-        <view class="earn-meta">{{item.enrolled_count}}人参团 · ¥{{item.priceText}}/节 · <text class="tag {{item.statusInfo.color === 'gray' ? 'tag-gray' : 'tag-blue'}}">{{item.statusInfo.text}}</text></view>
+        <view class="earn-meta">{{item.enrolled_count}}人占座 · ¥{{item.priceText}}/节 · <text class="tag {{item.statusInfo.color === 'gray' ? 'tag-gray' : 'tag-blue'}}">{{item.statusInfo.text}}</text></view>
       </view>
       <view class="earn-amount">
         <view class="earn-net price">¥{{item.netText}}</view>

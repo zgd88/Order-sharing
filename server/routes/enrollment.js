@@ -5,7 +5,7 @@ const { joinCourse } = require('../services/tier-engine');
 
 const router = express.Router();
 
-// 参团（家长）—— 触发阶梯定价引擎（挂载于 /api 根）
+// 占座（家长）—— 触发阶梯定价引擎（挂载于 /api 根）
 router.post('/courses/:id/join', authUser, (req, res) => {
   const result = joinCourse(Number(req.params.id), req.user.id);
   if (!result.ok) {
@@ -30,11 +30,11 @@ router.post('/courses/:id/join', authUser, (req, res) => {
         currentPriceCents: result.course.current_unit_price_cents,
       },
     },
-    message: result.course.status === 'formed' ? '恭喜，课程已成团！' : '参团成功',
+    message: result.course.status === 'formed' ? '恭喜，课程共学达成！' : '占座成功',
   });
 });
 
-// 我的参团（家长）
+// 我的占座（家长）
 router.get('/enrollments/mine', authUser, (req, res) => {
   const rows = db
     .prepare(

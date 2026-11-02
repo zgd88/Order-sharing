@@ -1,6 +1,6 @@
 <view class="success-page" wx:if="{{course}}">
   <view class="icon">🎉</view>
-  <view class="title">参团成功！</view>
+  <view class="title">占座成功！</view>
   <view class="sub">{{course.title}}</view>
 
   <view class="price-card">
@@ -11,7 +11,7 @@
 
   <view class="progress-card">
     <view class="progress-row">
-      <text>拼团进度</text>
+      <text>共学进度</text>
       <text class="{{formed ? 'green' : 'orange'}}">{{needToFormText}}</text>
     </view>
     <view class="progress-bar">
@@ -20,10 +20,10 @@
     <view class="progress-num">{{course.enrolledCount}}/{{course.maxStudents}} 人</view>
   </view>
 
-  <button class="share-big" bindtap="goPoster">📣 生成海报，邀请好友参团</button>
+  <button class="share-big" bindtap="goPoster">📣 生成海报，邀请好友占座</button>
   <button class="share-big plain" open-type="share">分享给微信好友</button>
   <view class="links">
-    <text bindtap="goMine">查看我的参团</text>
+    <text bindtap="goMine">查看我的占座</text>
     <text class="divider">|</text>
     <text bindtap="goHome">回到首页</text>
   </view>

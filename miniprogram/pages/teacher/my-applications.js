@@ -30,12 +30,12 @@ Page({
   },
   statusInfo(a) {
     if (a.status === 'pending') {
-      if (a.orderStatus === 'locked') return { text: '订单已被接走', cls: 'tag-gray', desc: '该订单已被其他老师拿下' };
+      if (a.orderStatus === 'locked') return { text: '意向已失效', cls: 'tag-gray', desc: '该需求已被其他老师锁定' };
       return { text: '待处理', cls: 'tag-orange', desc: '家长还没选，耐心等待' };
     }
     if (a.status === 'selected') return { text: '已选中', cls: 'tag-green', desc: '恭喜！家长已选择您，客服将联系您' };
-    if (a.invalidReason === 'order_closed') return { text: '已失效', cls: 'tag-gray', desc: '家长关闭了订单' };
-    return { text: '已失效', cls: 'tag-gray', desc: '该订单已被其他老师拿下' };
+    if (a.invalidReason === 'order_closed') return { text: '已失效', cls: 'tag-gray', desc: '家长关闭了该需求' };
+    return { text: '已失效', cls: 'tag-gray', desc: '该需求已被其他老师锁定' };
   },
   timeAgo(ts) {
     if (!ts) return '';

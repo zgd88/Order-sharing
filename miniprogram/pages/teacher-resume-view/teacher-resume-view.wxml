@@ -10,7 +10,7 @@
       </view>
       <view class="hero-meta">{{teacher.years}}年教龄{{teacher.education ? ' · ' + teacher.education : ''}}{{teacher.major ? ' · ' + teacher.major : ''}}</view>
       <view class="hero-meta" wx:if="{{teacher.graduateSchool}}">毕业院校：{{teacher.graduateSchool}}</view>
-      <view class="hero-apply">投递岗位：{{demandSubject}}{{demandGrade ? ' · ' + demandGrade : ''}}家教</view>
+      <view class="hero-apply">意向岗位：{{demandSubject}}{{demandGrade ? ' · ' + demandGrade : ''}}家教</view>
     </view>
   </view>
 
@@ -28,9 +28,9 @@
     <view class="intro-text">{{teacher.intro}}</view>
   </view>
 
-  <!-- 投递留言 -->
+  <!-- 意向留言 -->
   <view class="card" wx:if="{{teacher.note}}">
-    <view class="section-title">投递留言</view>
+    <view class="section-title">意向留言</view>
     <view class="intro-text">{{teacher.note}}</view>
   </view>
 </view>

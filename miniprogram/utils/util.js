@@ -20,9 +20,9 @@ function fen2yuan(cents) {
 }
 
 const COURSE_STATUS = {
-  recruiting: { text: '拼团中', color: '#4A90E2' },
-  formed: { text: '已成团', color: '#52C41A' },
-  failed: { text: '已流局', color: '#999999' },
+  recruiting: { text: '共学中', color: '#4A90E2' },
+  formed: { text: '共学达成', color: '#52C41A' },
+  failed: { text: '未达成', color: '#999999' },
   cancelled: { text: '已取消', color: '#999999' },
   finished: { text: '已结束', color: '#999999' },
 };

@@ -147,7 +147,7 @@ function mkCourse(teacher) {
     发布老师: teacher.row.昵称,
     老师手机号: teacher.phone,
     '报名/上限': `${c.enrolled_count}/${c.max_students}`,
-    状态: c.status === 'formed' ? '已成团' : c.status === 'recruiting' ? '拼团中' : c.status,
+    状态: c.status === 'formed' ? '共学达成' : c.status === 'recruiting' ? '共学中' : c.status,
   });
 }
 
@@ -176,7 +176,7 @@ for (const p of publishingParents) {
   ).run(p.userId, subject, grade, rnd(80, 250) * 100, p.phone,
     cityInfo.province, cityInfo.city, address, maskAddress(address), now, now);
   const orderId = Number(ins.lastInsertRowid);
-  // 老师投递
+  // 老师意向
   const appTeachers = pickN(teachers, Math.min(rnd(1, 4), teachers.length));
   const apps = [];
   for (const t of appTeachers) {
@@ -197,7 +197,7 @@ for (const p of publishingParents) {
     城市: cityInfo.city,
     发布家长: p.row.昵称,
     家长手机号: p.phone,
-    投递数: apps.length,
+    意向数: apps.length,
     状态: status,
   });
 }

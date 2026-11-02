@@ -1,16 +1,16 @@
-<!-- 家长：分段（拼团课 / 我的需求） -->
+<!-- 家长：分段（共学课 / 我的需求） -->
 <block wx:if="{{!isTeacher}}">
   <view class="container">
     <view class="segment-bar">
-      <view class="segment-item {{segment === 'enroll' ? 'active' : ''}}" data-segment="enroll" bindtap="onSegment">拼团课</view>
+      <view class="segment-item {{segment === 'enroll' ? 'active' : ''}}" data-segment="enroll" bindtap="onSegment">共学课</view>
       <view class="segment-item {{segment === 'demands' ? 'active' : ''}}" data-segment="demands" bindtap="onSegment">我的需求</view>
     </view>
 
-    <!-- 拼团参团 -->
+    <!-- 共学占座 -->
     <block wx:if="{{segment === 'enroll'}}">
       <view wx:if="{{loaded && !enrollments.length}}" class="empty">
-        <view>还没有参团记录</view>
-        <view class="empty-sub">去首页看看附近的拼好课吧</view>
+        <view>还没有占座记录</view>
+        <view class="empty-sub">去首页看看附近的共学课吧</view>
       </view>
       <view class="card enroll-card" wx:for="{{enrollments}}" wx:key="id" data-id="{{item.course.id}}" bindtap="onEnrollTap">
         <view class="e-head">
@@ -46,7 +46,7 @@
       <button class="demand-publish-btn" bindtap="goDemandForm">＋ 发布找老师需求</button>
       <view wx:if="{{loaded && !demands.length}}" class="empty">
         <view>还没有发布过需求</view>
-        <view class="empty-sub">发布需求，让认证老师来投递简历</view>
+        <view class="empty-sub">发布需求，让认证老师来表达意向</view>
       </view>
       <view class="card" wx:for="{{demands}}" wx:key="id" data-id="{{item.id}}" bindtap="onDemandTap">
         <view class="e-head">
@@ -56,9 +56,9 @@
         <view class="e-meta">
           <text class="tag tag-blue">¥{{item.rateText}}/小时</text>
           <text class="e-time">{{item.city}}</text>
-          <text class="e-time">收到 {{item.applicationCount}} 份简历</text>
+          <text class="e-time">收到 {{item.applicationCount}} 份意向</text>
         </view>
-        <view class="e-link">查看详情与投递 ›</view>
+        <view class="e-link">查看详情与意向 ›</view>
       </view>
     </block>
   </view>
@@ -69,11 +69,11 @@
   <view class="container">
     <view class="t-head">
       <view class="t-title">我的课程</view>
-      <button class="t-publish" bindtap="goPublish">＋ 发布拼好课</button>
+      <button class="t-publish" bindtap="goPublish">＋ 发布共学课</button>
     </view>
     <view wx:if="{{loaded && !teacherCourses.length}}" class="empty">
       <view>还没有发布课程</view>
-      <view class="empty-sub">发布一门拼好课，让家长帮你拉人</view>
+      <view class="empty-sub">发布一门共学课，让家长帮你拉人</view>
     </view>
     <view class="card" wx:for="{{teacherCourses}}" wx:key="id" data-id="{{item.id}}" bindtap="onTeacherCourseTap">
       <view class="e-head">

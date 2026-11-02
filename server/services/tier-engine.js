@@ -58,7 +58,7 @@ function createRefund({ courseId, enrollmentId, parentId, type, eventKey, amount
   ).run(courseId, enrollmentId, parentId, type, eventKey, amountCents, fromPrice, toPrice, remark, now, now);
 }
 
-// ---------------- 参团（核心事务） ----------------
+// ---------------- 占座（核心事务） ----------------
 
 // 返回 { ok, code, message, enrollment?, course? }
 function joinCourse(courseId, parentId) {
@@ -67,12 +67,12 @@ function joinCourse(courseId, parentId) {
     const course = db.prepare('SELECT * FROM courses WHERE id = ?').get(courseId);
     if (!course) throw err(404, '课程不存在');
     if (course.teacher_id === parentId) throw err(400, '不能报名自己的课程');
-    // 惰性流局：报名截止已过且未成团
+    // 惰性流局：报名截止已过且未共学达成
     if (course.status === 'recruiting' && Date.now() > course.deadline_at) {
       failCourseTx(courseId, 'flow');
       throw err(400, '报名已截止');
     }
-    if (course.status === 'failed') throw err(400, '课程已流局');
+    if (course.status === 'failed') throw err(400, '课程未达成');
     if (course.status === 'cancelled') throw err(400, '课程已取消');
     if (course.status === 'finished') throw err(400, '课程已结束');
     if (Date.now() > course.deadline_at) throw err(400, '报名已截止');
@@ -81,7 +81,7 @@ function joinCourse(courseId, parentId) {
     const existing = db
       .prepare('SELECT id FROM enrollments WHERE course_id = ? AND parent_id = ?')
       .get(courseId, parentId);
-    if (existing) throw err(400, '您已参团该课程');
+    if (existing) throw err(400, '您已占座该课程');
 
     const tiers = getTiers(courseId);
     if (!tiers.length) throw err(500, '课程阶梯配置缺失');
@@ -155,7 +155,7 @@ function err(statusCode, message) {
   return e;
 }
 
-// 流局：截止未成团（须在事务内调用）
+// 流局：截止未共学达成（须在事务内调用）
 function failCourseTx(courseId, reason) {
   const course = db.prepare('SELECT * FROM courses WHERE id = ?').get(courseId);
   if (!course || course.status !== 'recruiting') return;
@@ -176,7 +176,7 @@ function failCourseTx(courseId, reason) {
       amountCents: m.current_price_cents,
       fromPrice: m.current_price_cents,
       toPrice: 0,
-      remark: '拼团流局，全额退款（模拟退款，接入微信支付后走原路退回）',
+      remark: '共学流局，全额退款（模拟退款，接入微信支付后走原路退回）',
     });
     db.prepare(
       "UPDATE enrollments SET status = 'expired', expired_reason = ?, updated_at = ? WHERE id = ?"
@@ -236,7 +236,7 @@ function cancelCourse(courseId, by) {
   }
 }
 
-// 课程完成：成团且上课时间结束
+// 课程完成：共学达成且上课时间结束
 function finishCourse(courseId) {
   const course = db.prepare('SELECT * FROM courses WHERE id = ?').get(courseId);
   if (!course || course.status !== 'formed' || Date.now() < course.end_time) return false;
@@ -245,7 +245,7 @@ function finishCourse(courseId) {
   return true;
 }
 
-// 定时扫描：流局（deadline 过期未成团）+ 完成（end_time 过后）
+// 定时扫描：流局（deadline 过期未共学达成）+ 完成（end_time 过后）
 function sweepOnce() {
   const now = Date.now();
   const toFail = db

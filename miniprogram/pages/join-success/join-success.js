@@ -20,7 +20,7 @@ Page({
         course: c,
         formed: c.status === 'formed',
         priceText: util.fen2yuan(c.currentPriceCents),
-        needToFormText: c.needToForm > 0 ? `再邀 ${c.needToForm} 人即可成团` : '已成团',
+        needToFormText: c.needToForm > 0 ? `再邀 ${c.needToForm} 人即可共学达成` : '共学达成',
       });
     } catch (e) { /* ignore */ }
   },
@@ -36,7 +36,7 @@ Page({
   onShareAppMessage() {
     const c = this.data.course;
     return {
-      title: c ? `【拼好课】${c.title}，${c.enrolledCount}人已参团，再邀${c.needToForm}人成团！` : '拼好课',
+      title: c ? `【共学课】${c.title}，${c.enrolledCount}人已占座，再邀${c.needToForm}人共学达成！` : '共学课',
       path: `/pages/course-detail/course-detail?id=${this.data.courseId}`,
     };
   },

@@ -7,7 +7,7 @@
   </view>
 
   <view wx:if="{{!loading && !list.length}}" class="empty">
-    <view>暂无招募中的需求</view>
+    <view>暂无意向征集中的需求</view>
     <view class="empty-sub">过会儿再来看看</view>
   </view>
 
@@ -19,7 +19,7 @@
     <view class="d-meta">📍 {{item.addressDisplay}}</view>
     <view class="d-foot">
       <text class="d-time">{{item.timeText}}</text>
-      <text class="d-count">{{item.applicationCount}} 位老师已投递</text>
+      <text class="d-count">{{item.applicationCount}} 位老师已表达意向</text>
     </view>
   </view>
 </view>

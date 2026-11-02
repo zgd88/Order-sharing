@@ -62,7 +62,7 @@
   </view>
 
   <view class="card tier-card">
-    <view class="form-title">阶梯拼团价 <text class="tier-hint">人数越多越便宜</text></view>
+    <view class="form-title">阶梯共学价 <text class="tier-hint">人数越多越便宜</text></view>
     <view class="tier-row-head">
       <text>满 N 人</text>
       <text>单价（元/节）</text>
@@ -79,7 +79,7 @@
 
     <view class="form-item-row config-row">
       <view class="form-item half">
-        <view class="form-label">成团人数</view>
+        <view class="form-label">共学达成人数</view>
         <input class="form-input" type="number" value="{{minStudents}}" bindinput="onMinStudents" />
       </view>
       <view class="form-item half">
@@ -87,8 +87,8 @@
         <input class="form-input" type="number" value="{{maxStudents}}" bindinput="onMaxStudents" />
       </view>
     </view>
-    <view class="tier-tip">💡 家长按当前档价参团，人数每上一档，差价自动退还给先前报名的家长。截止未达成团人数自动流局退款。</view>
+    <view class="tier-tip">💡 家长按当前档价占座，人数每上一档，差价自动退还给先前报名的家长。截止未达共学达成人数自动未达成退款。</view>
   </view>
 
-  <button class="btn-primary submit-btn" bindtap="submit" disabled="{{submitting}}">发布拼好课</button>
+  <button class="btn-primary submit-btn" bindtap="submit" disabled="{{submitting}}">发布共学课</button>
 </view>

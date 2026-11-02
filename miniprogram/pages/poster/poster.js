@@ -62,7 +62,7 @@ Page({
       this.roundRect(ctx, 210, y, 130, 44, 8);
       ctx.fill();
       ctx.fillStyle = '#666';
-      ctx.fillText(`${c.enrolledCount}人已参团`, 226, y + 30);
+      ctx.fillText(`${c.enrolledCount}人已占座`, 226, y + 30);
 
       y += 90;
       // 价格
@@ -84,7 +84,7 @@ Page({
       // 提示
       ctx.fillStyle = '#FA8C16';
       ctx.font = 'bold 30px sans-serif';
-      const hint = c.nextTierHint ? c.nextTierHint.text : `还差 ${c.needToForm} 人成团`;
+      const hint = c.nextTierHint ? c.nextTierHint.text : `还差 ${c.needToForm} 人共学达成`;
       ctx.fillText(`🔥 ${hint}`, 80, y);
 
       // 底部信息区
@@ -96,7 +96,7 @@ Page({
       ctx.fillText('长按识别小程序码', 80, qy + 50);
       ctx.fillStyle = '#999';
       ctx.font = '24px sans-serif';
-      ctx.fillText('同城教培拼好课 · 越拼越省', 80, qy + 90);
+      ctx.fillText('同城教培共学课 · 越学越省', 80, qy + 90);
 
       // 二维码占位（接入微信小程序码后替换为真实图片）
       ctx.strokeStyle = '#4A90E2';

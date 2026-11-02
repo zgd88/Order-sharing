@@ -6,8 +6,8 @@ Page({
   data: {
     isTeacher: false,
     // 家长：分段
-    segment: 'enroll', // enroll=拼团课 demands=我的需求
-    // 家长：拼团参团
+    segment: 'enroll', // enroll=共学课 demands=我的需求
+    // 家长：共学占座
     enrollments: [],
     // 家长：我的需求
     demands: [],
@@ -54,7 +54,7 @@ Page({
         refundTotalText: util.fen2yuan((m.refunds || []).reduce((s, r) => s + (r.status === 'paid' ? r.amount_cents : 0), 0)),
         refundsView: (m.refunds || []).map((r) => ({
           id: r.id,
-          typeText: r.type === 'tier_diff' ? '阶梯降价退差' : r.type === 'flow_refund' ? '流局退款' : '课程取消退款',
+          typeText: r.type === 'tier_diff' ? '阶梯降价退差' : r.type === 'flow_refund' ? '未达成退款' : '课程取消退款',
           amountText: util.fen2yuan(r.amount_cents),
           statusText: r.status === 'paid' ? '已退' : r.status === 'void' ? '已作废' : '待退',
           timeText: util.formatTime(r.created_at),
@@ -66,17 +66,17 @@ Page({
   },
   enrollStatusInfo(m) {
     if (m.status === 'expired') {
-      const map = { flow: '已流局退款', teacher_cancel: '老师取消已退款', admin_cancel: '平台取消已退款' };
+      const map = { flow: '未达成退款', teacher_cancel: '老师取消已退款', admin_cancel: '平台取消已退款' };
       return { text: map[m.expiredReason] || '已失效', color: 'gray' };
     }
-    return { text: '参团中', color: 'green' };
+    return { text: '占座中', color: 'green' };
   },
   async loadDemands() {
     this.setData({ loading: true });
     try {
       const rows = await api.get('/api/demands/mine');
       const statusMap = {
-        recruiting: { text: '招募中', cls: 'tag-orange' },
+        recruiting: { text: '意向征集中', cls: 'tag-orange' },
         locked: { text: '已锁定', cls: 'tag-green' },
         closed: { text: '已关闭', cls: 'tag-gray' },
       };

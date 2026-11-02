@@ -9,7 +9,7 @@ const router = express.Router();
 
 const SUBJECTS = ['数学', '语文', '英语', '物理', '化学', '生物', '政治', '历史', '地理', '编程', '美术', '音乐', '书法', '舞蹈', '其他'];
 
-// 发布拼好课（老师）
+// 发布共学课（老师）
 router.post('/', authTeacher, (req, res) => {
   const b = req.body || {};
   const {
@@ -35,8 +35,8 @@ router.post('/', authTeacher, (req, res) => {
   }
   if (deadline > start) return res.status(400).json({ code: 400, message: '报名截止时间须早于开课时间' });
   if (end < start) return res.status(400).json({ code: 400, message: '结束时间须晚于开课时间' });
-  if (minS < 2) return res.status(400).json({ code: 400, message: '成团人数至少 2 人' });
-  if (maxS < minS) return res.status(400).json({ code: 400, message: '人数上限不能小于成团人数' });
+  if (minS < 2) return res.status(400).json({ code: 400, message: '共学达成人数至少 2 人' });
+  if (maxS < minS) return res.status(400).json({ code: 400, message: '人数上限不能小于共学达成人数' });
 
   const v = validateTiers(tiers, maxS);
   if (!v.ok) return res.status(400).json({ code: 400, message: v.message });
@@ -57,11 +57,11 @@ router.post('/', authTeacher, (req, res) => {
   res.json({ code: 0, data: { id: courseId }, message: '课程发布成功' });
 });
 
-// 拼好课大厅（家长）：省/城市/科目/年级筛选 + 距离排序
+// 共学课大厅（家长）：省/城市/科目/年级筛选 + 距离排序
 router.get('/', (req, res) => {
   const { subject, grade, province, city, lat, lng } = req.query;
   const now = Date.now();
-  // 惰性流局：报名截止已过未成团
+  // 惰性流局：报名截止已过未共学达成
   const overdue = db
     .prepare("SELECT id FROM courses WHERE status = 'recruiting' AND deadline_at <= ?")
     .all(now);

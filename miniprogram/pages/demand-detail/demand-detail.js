@@ -20,7 +20,7 @@ Page({
     try {
       const o = await api.get(`/api/demands/${this.data.id}`);
       const statusMap = {
-        recruiting: { text: '招募中', cls: 'tag-orange' },
+        recruiting: { text: '意向征集中', cls: 'tag-orange' },
         locked: { text: '已锁定', cls: 'tag-green' },
         closed: { text: '已关闭', cls: 'tag-gray' },
       };
@@ -84,7 +84,7 @@ Page({
   onClose() {
     wx.showModal({
       title: '关闭需求',
-      content: '关闭后老师将无法继续投递，已投递的老师会收到通知。确定关闭吗？',
+      content: '关闭后老师将无法继续表达意向，已表达意向的老师会收到通知。确定关闭吗？',
       confirmText: '关闭需求',
       confirmColor: '#F5222D',
       success: async (r) => {

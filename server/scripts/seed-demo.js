@@ -5,7 +5,7 @@ const { joinCourse } = require('../services/tier-engine');
 const RESET = process.argv.includes('--reset');
 if (RESET) {
   console.log('[seed] 清空业务数据（保留管理员）...');
-  // 订单↔投递存在循环外键，重置期间临时关闭外键检查
+  // 订单↔意向存在循环外键，重置期间临时关闭外键检查
   db.exec('PRAGMA foreign_keys = OFF');
   for (const t of ['notifications', 'demand_applications', 'demand_orders', 'refund_records', 'enrollments', 'course_tiers', 'courses', 'teacher_profiles', 'banners', 'users']) {
     db.prepare(`DELETE FROM ${t}`).run();
@@ -100,7 +100,7 @@ const mkCourse = ({ teacherId, title, subject, grade, tiers, minStudents, maxStu
   return courseId;
 };
 
-// 课程1：数学（已成团 5 人，继续招募中，阶梯 100/90/80）
+// 课程1：数学（共学达成 5 人，继续招募中，阶梯 100/90/80）
 const c1 = mkCourse({
   teacherId: t1, title: '三年级数学思维冲刺班（10次课）', subject: '数学', grade: '三年级',
   tiers: [{ min_people: 1, price_cents: 10000 }, { min_people: 3, price_cents: 9000 }, { min_people: 5, price_cents: 8000 }],
@@ -108,7 +108,7 @@ const c1 = mkCourse({
 });
 for (let i = 0; i < 5; i++) joinCourse(c1, parents[i]);
 
-// 课程2：英语（拼团中 2 人，还差 1 人成团）
+// 课程2：英语（共学中 2 人，还差 1 人共学达成）
 const c2 = mkCourse({
   teacherId: t2, title: '少儿英语自然拼读启蒙班', subject: '英语', grade: '一年级',
   tiers: [{ min_people: 1, price_cents: 8000 }, { min_people: 3, price_cents: 7000 }, { min_people: 6, price_cents: 6000 }],
@@ -117,7 +117,7 @@ const c2 = mkCourse({
 joinCourse(c2, parents[0]);
 joinCourse(c2, parents[3]);
 
-// 课程3：编程（拼团中 1 人）
+// 课程3：编程（共学中 1 人）
 const c3 = mkCourse({
   teacherId: t1, title: '少儿编程 Python 入门体验课', subject: '编程', grade: '四年级',
   tiers: [{ min_people: 1, price_cents: 12000 }, { min_people: 4, price_cents: 10000 }, { min_people: 8, price_cents: 8800 }],
@@ -133,7 +133,7 @@ const c4 = mkCourse({
 });
 joinCourse(c4, parents[4]);
 
-// 课程5：贵阳观山湖区（拼团中，演示多地区筛选）
+// 课程5：贵阳观山湖区（共学中，演示多地区筛选）
 const c5 = mkCourse({
   teacherId: t1, title: '观山湖区初中物理提分班', subject: '物理', grade: '初二',
   tiers: [{ min_people: 1, price_cents: 10000 }, { min_people: 3, price_cents: 8500 }, { min_people: 6, price_cents: 7500 }],
@@ -141,7 +141,7 @@ const c5 = mkCourse({
 });
 joinCourse(c5, parents[5]);
 
-// 家长发单：需求1（招募中，2 位老师已投递）
+// 家长发单：需求1（招募中，2 位老师已表达意向）
 const { maskAddress } = require('../services/demand');
 const mkDemand = ({ parentId, subject, grade, rateCents, phone, city, address, status = 'recruiting' }) => {
   const ins = db.prepare(
@@ -182,10 +182,10 @@ db.prepare("UPDATE demand_applications SET status = 'selected', updated_at = ? W
 db.prepare(
   `INSERT INTO banners (title, image_url, link_type, link_value, sort_order, enabled, start_at, end_at, created_at, updated_at)
    VALUES (?, ?, ?, ?, ?, 1, NULL, NULL, ?, ?)`
-).run('拼好课上线啦', '/uploads/demo-banner.jpg', 'course', String(c1), 1, now, now);
+).run('共学课上线啦', '/uploads/demo-banner.jpg', 'course', String(c1), 1, now, now);
 
 console.log('[seed] 演示数据完成：');
 console.log(`  老师 3 位（2 已认证、1 待审核），家长 8 位`);
-console.log(`  课程 5 门：c${c1} 数学(5/8已成团) c${c2} 英语(2/6) c${c3} 编程(1/8) c${c4} 美术(1/6即将流局) c${c5} 物理(贵阳观山湖区)`);
-console.log(`  家长发单 2 个：d${d1} 数学(招募中,2人投递) d${d2} 英语(已锁定,客服跟进中)`);
+console.log(`  课程 5 门：c${c1} 数学(5/8共学达成) c${c2} 英语(2/6) c${c3} 编程(1/8) c${c4} 美术(1/6即将流局) c${c5} 物理(贵阳观山湖区)`);
+console.log(`  家长发单 2 个：d${d1} 数学(招募中,2人意向) d${d2} 英语(已锁定,客服跟进中)`);
 console.log('  管理员：admin / admin123');

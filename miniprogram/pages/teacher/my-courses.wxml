@@ -1,7 +1,7 @@
 <view class="container">
   <view wx:if="{{!loading && !list.length}}" class="empty">
     <view>还没有发布课程</view>
-    <view class="empty-sub">发布一门拼好课，让家长帮你拉人</view>
+    <view class="empty-sub">发布一门共学课，让家长帮你拉人</view>
   </view>
   <view class="card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="onCourseTap">
     <view class="e-head">
@@ -21,5 +21,5 @@
     </view>
     <view class="e-link">查看报名名单 ›</view>
   </view>
-  <button class="btn-primary publish-fab" bindtap="goPublish">＋ 发布拼好课</button>
+  <button class="btn-primary publish-fab" bindtap="goPublish">＋ 发布共学课</button>
 </view>

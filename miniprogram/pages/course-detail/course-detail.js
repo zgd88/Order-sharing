@@ -45,7 +45,7 @@ Page({
         loading: false,
         joined,
         statusText: statusInfo.text,
-        needToFormText: c.needToForm > 0 ? `还差 ${c.needToForm} 人成团` : '已达成团人数',
+        needToFormText: c.needToForm > 0 ? `还差 ${c.needToForm} 人共学达成` : '已达共学达成人数',
         canJoin: ['recruiting', 'formed'].includes(c.status) && !joined,
         startText: util.formatTime(c.startTime),
         endText: util.formatTime(c.endTime),
@@ -62,17 +62,17 @@ Page({
       return;
     }
     if (this.data.isTeacher) {
-      wx.showToast({ title: '请用家长身份参团', icon: 'none' });
+      wx.showToast({ title: '请用家长身份占座', icon: 'none' });
       return;
     }
     const c = this.data.course;
     wx.showModal({
-      title: '确认参团',
-      content: `当前 ${c.enrolledCount} 人参团，你将按 ¥${util.fen2yuan(this.currentPrice())}/节 参团。人数增加后降价，差价自动退还。`,
-      confirmText: '参团',
+      title: '确认占座',
+      content: `当前 ${c.enrolledCount} 人占座，你将按 ¥${util.fen2yuan(this.currentPrice())}/节 占座。人数增加后降价，差价自动退还。`,
+      confirmText: '占座',
       success: async (r) => {
         if (!r.confirm) return;
-        wx.showLoading({ title: '参团中...' });
+        wx.showLoading({ title: '占座中...' });
         try {
           await api.post(`/api/courses/${c.id}/join`, {});
           wx.hideLoading();
@@ -95,7 +95,7 @@ Page({
   onShareAppMessage() {
     const c = this.data.course;
     return {
-      title: c ? `【拼好课】${c.title}，当前${c.enrolledCount}人参团，越拼越省！` : '拼好课',
+      title: c ? `【共学课】${c.title}，当前${c.enrolledCount}人占座，越学越省！` : '共学课',
       path: `/pages/course-detail/course-detail?id=${this.data.id}`,
     };
   },

@@ -117,7 +117,7 @@ router.post('/courses/:id/cancel', authTeacher, (req, res) => {
   res.json({ code: 0, message: '课程已取消，家长将收到退款' });
 });
 
-// 收益明细（MVP：按参团统计，平台抽成 5% 预留展示）
+// 收益明细（MVP：按占座统计，平台抽成 5% 预留展示）
 router.get('/earnings', authTeacher, (req, res) => {
   const rows = db
     .prepare(
@@ -245,9 +245,9 @@ function sanitizeResume(r) {
 }
 
 // ---------------- 家长发单：需求大厅（脱敏） ----------------
-// 查看需求订单无需资格认证（仅需登录）；投递简历时才要求认证通过
+// 查看需求订单无需资格认证（仅需登录）；表达意向时才要求认证通过
 
-// 需求大厅：仅招募中，绝不返回家长电话与门牌号
+// 需求大厅：仅意向征集中，绝不返回家长电话与门牌号
 router.get('/demands', authUser, (req, res) => {
   const rows = db
     .prepare(
@@ -270,15 +270,15 @@ router.get('/demands/:id', authUser, (req, res) => {
   res.json({ code: 0, data: { ...sanitizeTeacherOrder(o), applied: !!mine } });
 });
 
-// 投递简历
+// 表达意向
 router.post('/demands/:id/apply', authTeacher, (req, res) => {
   const { note } = req.body || {};
   const r = require('../services/demand').applyOrder(Number(req.params.id), req.user.id, note);
   if (!r.ok) return res.status(r.code || 400).json({ code: r.code || 400, message: r.message });
-  res.json({ code: 0, message: '投递成功，等待家长查看' });
+  res.json({ code: 0, message: '已表达意向，等待家长查看' });
 });
 
-// 我的投递
+// 沟通记录
 router.get('/applications', authTeacher, (req, res) => {
   const rows = db
     .prepare(

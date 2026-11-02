@@ -70,7 +70,7 @@ for (let i = 1; i <= P; i++) {
   parents.push(uid);
 }
 
-// ---- 3. 批量拼好课 ----
+// ---- 3. 批量共学课 ----
 const mkCourse = ({ teacherId, title, subject, grade, tiers, minStudents, maxStudents, cityInfo, deadlineOffset, startOffset }) => {
   const deadline = now + deadlineOffset * DAY;
   const start = now + startOffset * DAY;
@@ -123,7 +123,7 @@ for (let i = 1; i <= C; i++) {
     startOffset,
   });
   courseIds.push(cid);
-  // 随机报名：约 1/3 的课报名到成团
+  // 随机报名：约 1/3 的课报名到共学达成
   const forceFormed = i % 3 === 0;
   const target = forceFormed ? rnd(minStudents, maxStudents - 1) : rnd(0, Math.min(maxStudents - 1, 8));
   const joiners = pickN(parents, Math.min(target, parents.length));
@@ -150,7 +150,7 @@ for (let i = 1; i <= D; i++) {
     cityInfo.province, cityInfo.city, address, maskAddress(address), now, now);
   const orderId = Number(ins.lastInsertRowid);
   demandIds.push(orderId);
-  // 随机老师投递
+  // 随机老师意向
   const appCount = rnd(0, 5);
   const apps = [];
   for (const t of pickN(teachers, Math.min(appCount, teachers.length))) {
@@ -166,6 +166,6 @@ for (let i = 1; i <= D; i++) {
 
 console.log('[seed-bulk] 批量测试数据完成（追加式，未清空原数据）：');
 console.log(`  老师 ${T} 位（已认证）、家长 ${P} 位`);
-console.log(`  拼好课 ${C} 门（其中已成团 ${formedCount} 门）`);
+console.log(`  共学课 ${C} 门（其中共学达成 ${formedCount} 门）`);
 console.log(`  家长发单 ${D} 条（其中已锁定 ${lockedCount} 条）`);
 console.log('  数据标识:', TAG, '（重复执行不会冲突）');

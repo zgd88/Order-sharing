@@ -1,6 +1,6 @@
 <view class="container">
   <view wx:if="{{!loading && !list.length}}" class="empty">
-    <view>还没有投递记录</view>
+    <view>还没有意向记录</view>
     <view class="empty-sub">去需求大厅看看家长的找老师需求</view>
   </view>
 

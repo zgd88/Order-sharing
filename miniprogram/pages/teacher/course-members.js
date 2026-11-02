@@ -58,7 +58,7 @@ Page({
   onShareAppMessage() {
     const c = this.data.course;
     return {
-      title: c ? `【拼好课】${c.title}，${c.enrolled_count}人已参团！` : '拼好课',
+      title: c ? `【共学课】${c.title}，${c.enrolled_count}人已占座！` : '共学课',
       path: `/pages/course-detail/course-detail?id=${this.data.id}`,
     };
   },

@@ -32,10 +32,10 @@ router.post('/', (req, res) => {
     )
     .run(req.user.id, subject, grade || null, rate, String(phone), normalizeProvince(province), city, address,
       maskAddress(address), now, now);
-  res.json({ code: 0, data: { id: Number(ins.lastInsertRowid) }, message: '需求发布成功，等待老师投递' });
+  res.json({ code: 0, data: { id: Number(ins.lastInsertRowid) }, message: '需求发布成功，等待老师意向' });
 });
 
-// 我的需求列表（含投递数）
+// 我的需求列表（含意向数）
 router.get('/mine', (req, res) => {
   const rows = db
     .prepare(
@@ -47,7 +47,7 @@ router.get('/mine', (req, res) => {
   res.json({ code: 0, data: rows.map(sanitizeParentOrder) });
 });
 
-// 需求详情（本人：含投递简历列表，含老师信息；电话可看自己的）
+// 需求详情（本人：含表达意向列表，含老师信息；电话可看自己的）
 router.get('/:id', (req, res) => {
   const o = db.prepare('SELECT * FROM demand_orders WHERE id = ?').get(req.params.id);
   if (!o) return res.status(404).json({ code: 404, message: '需求不存在' });
@@ -100,8 +100,8 @@ router.get('/:id', (req, res) => {
     })),
   };
   if (!isOwner) {
-    // 非订单所有者（仅家长本人可看投递列表）
-    return res.status(403).json({ code: 403, message: '无权查看该需求的投递列表' });
+    // 非订单所有者（仅家长本人可看意向列表）
+    return res.status(403).json({ code: 403, message: '无权查看该需求的意向列表' });
   }
   res.json({ code: 0, data });
 });
@@ -109,10 +109,10 @@ router.get('/:id', (req, res) => {
 // 选择老师（锁单）
 router.post('/:id/select', (req, res) => {
   const { applicationId } = req.body || {};
-  if (!applicationId) return res.status(400).json({ code: 400, message: '缺少投递 ID' });
+  if (!applicationId) return res.status(400).json({ code: 400, message: '缺少意向 ID' });
   const r = selectTeacher(Number(req.params.id), Number(applicationId), req.user.id);
   if (!r.ok) return res.status(r.code || 400).json({ code: r.code || 400, message: r.message });
-  res.json({ code: 0, message: '订单已锁定，平台客服将尽快与您和老师联系' });
+  res.json({ code: 0, message: '需求已锁定，平台客服将尽快与您和老师联系' });
 });
 
 // 关闭订单
